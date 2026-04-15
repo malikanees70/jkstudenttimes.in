@@ -4,52 +4,113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JKUpdates.in – Live Updates</title>
+<title>JKUpdates.in – KU | JKBOSE | JKSSB</title>
 
-<meta name="description" content="Live updates from Kashmir University, JKBOSE, JKSSB">
+<meta name="description" content="Latest updates from Kashmir University, JKBOSE, JKSSB">
 
 <style>
-body{
-  font-family: system-ui;
-  max-width:720px;
-  margin:auto;
-  padding:20px;
-  background:#fff;
-  color:#111;
-  line-height:1.7;
+:root{
+  --primary:#2563eb;
+  --ku:#1d4ed8;
+  --bose:#059669;
+  --ssb:#7c3aed;
+  --bg:#f3f6fb;
 }
 
-header h1{margin:0;}
-.sub{color:#666;font-size:14px;}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:var(--bg);
+}
 
+/* HEADER */
+header{
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+header h1{margin:0;}
+header p{margin:5px 0 0;font-size:14px;opacity:.9}
+
+/* NAV */
 nav{
-  margin:20px 0;
   display:flex;
-  gap:15px;
+  justify-content:center;
+  gap:10px;
+  padding:10px;
+  background:#fff;
   flex-wrap:wrap;
 }
-nav a{
+nav button{
+  border:none;
+  padding:8px 14px;
+  background:#eee;
   cursor:pointer;
-  color:#555;
-  text-decoration:none;
+  border-radius:20px;
 }
-nav a:hover{color:#000;}
+nav button.active{background:var(--primary);color:#fff}
 
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+}
+@media(max-width:800px){
+  .container{grid-template-columns:1fr;}
+}
+
+/* POSTS */
 .post{
-  border-bottom:1px solid #eee;
-  padding:15px 0;
+  background:#fff;
+  padding:15px;
+  margin-bottom:10px;
+  border-radius:10px;
   cursor:pointer;
+  transition:.2s;
 }
-.post h2{margin:0;font-size:18px;}
-.post p{margin:5px 0;color:#555;font-size:14px;}
+.post:hover{transform:translateY(-2px);}
 
-.article{display:none;}
-.back{cursor:pointer;color:#0077cc;margin-bottom:10px;}
+.tag{
+  font-size:11px;
+  padding:3px 8px;
+  border-radius:10px;
+  color:#fff;
+}
+.ku{background:var(--ku);}
+.bose{background:var(--bose);}
+.ssb{background:var(--ssb);}
 
+.post h2{margin:8px 0;font-size:18px;}
+.post p{color:#555;font-size:14px;}
+
+/* SIDEBAR */
+.sidebar{
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+}
+.sidebar h3{margin-top:0;}
+
+/* ARTICLE */
+.article{
+  display:none;
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+}
+.back{cursor:pointer;color:blue;margin-bottom:10px}
+
+/* FOOTER */
 footer{
-  margin-top:40px;
+  text-align:center;
+  padding:20px;
   font-size:12px;
-  color:#888;
+  color:#777;
 }
 </style>
 </head>
@@ -58,123 +119,129 @@ footer{
 
 <header>
   <h1>JKUpdates.in</h1>
-  <p class="sub">Live Notifications · KU · JKBOSE · JKSSB</p>
+  <p>Live Notifications · KU · JKBOSE · JKSSB</p>
 </header>
 
 <nav>
-  <a onclick="filterPosts('all')">All</a>
-  <a onclick="filterPosts('ku')">KU</a>
-  <a onclick="filterPosts('bose')">JKBOSE</a>
-  <a onclick="filterPosts('ssb')">JKSSB</a>
+  <button onclick="filterPosts('all')" class="active">All</button>
+  <button onclick="filterPosts('ku')">KU</button>
+  <button onclick="filterPosts('bose')">JKBOSE</button>
+  <button onclick="filterPosts('ssb')">JKSSB</button>
 </nav>
 
-<div id="list">Loading updates...</div>
-<div id="article" class="article"></div>
+<div class="container">
+
+  <div>
+    <div id="list"></div>
+    <div id="article" class="article"></div>
+  </div>
+
+  <div class="sidebar">
+    <h3>Quick Links</h3>
+    <ul>
+      <li><a href="https://kashmiruniversity.net" target="_blank">KU Official</a></li>
+      <li><a href="https://jkbose.nic.in" target="_blank">JKBOSE</a></li>
+      <li><a href="https://jkssb.nic.in" target="_blank">JKSSB</a></li>
+    </ul>
+
+    <h3>About</h3>
+    <p>This site aggregates latest notifications for students.</p>
+  </div>
+
+</div>
 
 <footer>
-  © 2026 JKUpdates.in
+  © 2026 JKUpdates.in · Not affiliated with official bodies
 </footer>
 
 <script>
-let DB = [];
-let currentFilter = 'all';
+let DB=[];
+let current='all';
 
-// 🔥 RSS FEEDS (via rss2json API)
-const feeds = [
+const feeds=[
   {
-    url: "https://api.rss2json.com/v1/api.json?rss_url=https://kashmiruniversity.net/notifications.xml",
-    cat: "ku"
+    url:"https://api.rss2json.com/v1/api.json?rss_url=https://kashmiruniversity.net/notifications.xml",
+    cat:"ku"
   },
   {
-    url: "https://api.rss2json.com/v1/api.json?rss_url=https://jkbose.nic.in/rss.xml",
-    cat: "bose"
+    url:"https://api.rss2json.com/v1/api.json?rss_url=https://jkbose.nic.in/rss.xml",
+    cat:"bose"
   }
 ];
 
-// FETCH DATA
 async function fetchUpdates(){
-  DB = [];
-
-  for(const feed of feeds){
+  DB=[];
+  for(const f of feeds){
     try{
-      const res = await fetch(feed.url);
-      const data = await res.json();
+      const res=await fetch(f.url);
+      const data=await res.json();
 
-      data.items.slice(0,5).forEach((item, index)=>{
+      data.items.slice(0,5).forEach(item=>{
         DB.push({
-          id: Date.now() + Math.random(),
-          cat: feed.cat,
-          title: item.title,
-          excerpt: item.description.replace(/<[^>]+>/g,'').slice(0,100),
-          content: item.description,
-          link: item.link
+          id:Math.random(),
+          cat:f.cat,
+          title:item.title,
+          excerpt:item.description.replace(/<[^>]+>/g,'').slice(0,100),
+          content:item.description,
+          link:item.link
         });
       });
 
-    }catch(e){
-      console.log("Feed error", e);
-    }
+    }catch(e){}
   }
 
-  // fallback demo if feeds fail
-  if(DB.length === 0){
-    DB = [
-      {id:1,cat:'ku',title:'KU Update',excerpt:'Latest update...',content:'Demo content'},
-      {id:2,cat:'bose',title:'JKBOSE Update',excerpt:'Latest result...',content:'Demo content'},
-      {id:3,cat:'ssb',title:'JKSSB Jobs',excerpt:'Recruitment open...',content:'Demo content'}
+  if(DB.length===0){
+    DB=[
+      {id:1,cat:'ku',title:'KU Update',excerpt:'Latest KU update',content:'Demo content'},
+      {id:2,cat:'bose',title:'JKBOSE Result',excerpt:'Results declared',content:'Demo content'},
+      {id:3,cat:'ssb',title:'JKSSB Jobs',excerpt:'Recruitment open',content:'Demo content'}
     ];
   }
 
-  renderPosts();
+  render();
 }
 
-// RENDER POSTS
-function renderPosts(){
-  const list = document.getElementById('list');
-  const data = currentFilter==='all'?DB:DB.filter(p=>p.cat===currentFilter);
+function render(){
+  const list=document.getElementById('list');
+  const data=current==='all'?DB:DB.filter(p=>p.cat===current);
 
-  list.innerHTML = data.map(p=>`
+  list.innerHTML=data.map(p=>`
     <div class="post" onclick="openPost('${p.id}')">
+      <span class="tag ${p.cat}">${p.cat.toUpperCase()}</span>
       <h2>${p.title}</h2>
       <p>${p.excerpt}</p>
     </div>
   `).join('');
 }
 
-// FILTER
 function filterPosts(cat){
-  currentFilter = cat;
-  document.getElementById('article').style.display='none';
-  document.getElementById('list').style.display='block';
-  renderPosts();
+  current=cat;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  render();
 }
 
-// OPEN ARTICLE
 function openPost(id){
-  const p = DB.find(x=>x.id==id);
-  const article = document.getElementById('article');
+  const p=DB.find(x=>x.id==id);
+  const art=document.getElementById('article');
 
-  article.innerHTML = `
+  art.innerHTML=`
     <div class="back" onclick="goBack()">← Back</div>
-    <h2>${p.title}</h2>
+    <h1>${p.title}</h1>
     <p>${p.content}</p>
-    ${p.link ? `<p><a href="${p.link}" target="_blank">Read official source →</a></p>`:''}
+    ${p.link?`<p><a href="${p.link}" target="_blank">Read official source</a></p>`:''}
   `;
 
   document.getElementById('list').style.display='none';
-  article.style.display='block';
+  art.style.display='block';
 }
 
-// BACK
 function goBack(){
-  document.getElementById('article').style.display='none';
   document.getElementById('list').style.display='block';
+  document.getElementById('article').style.display='none';
 }
 
-// AUTO REFRESH EVERY 10 MIN
-setInterval(fetchUpdates, 10*60*1000);
-
-// INIT
+setInterval(fetchUpdates,10*60*1000);
 fetchUpdates();
 </script>
 
