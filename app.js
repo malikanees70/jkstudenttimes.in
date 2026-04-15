@@ -1,526 +1,532 @@
-/**
- * JK Updates – app.js
- * Fetches live data from Kashmir University, JKBOSE, JKSSB
- * and JK exam results via official RSS feeds and CORS proxies.
- *
- * NOTE: Official portals do not expose public JSON APIs.
- * This file scrapes their public RSS feeds (where available)
- * through an RSS-to-JSON proxy (rss2json.com free tier).
- * Where RSS is unavailable, curated static records + direct portal links
- * are shown alongside live fetch attempts.
- */
+/* ═══════════════════════════════════════════════
+JKUpdates.in — Main JavaScript
+═══════════════════════════════════════════════ */
 
-'use strict';
+‘use strict’;
 
-/* ============================================================
-   CONFIGURATION
-   ============================================================ */
-const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+// ── DATA ──────────────────────────────────────────
+const DB = [
+{
+id:“ku-001”, src:“ku”, cat:[“ku”], isNew:true, date:“2026-04-14”,
+title:“Date Sheet for Annual Examination 2025 – B.A/B.Sc/B.Com (General) Semester VI”,
+excerpt:“The Controller of Examinations notifies all concerned that the date sheet for Annual Examinations 2025 (Semester VI) stands released for B.A, B.Sc, and B.Com General courses.”,
+tags:[“Date Sheet”,“Kashmir University”,“B.A”,“B.Sc”,“B.Com”,“Semester VI”],
+officialUrl:“https://kashmiruniversity.net”,
+body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, Hazratbal Srinagar, notifies all students, colleges, and examination centres that the <strong>Date Sheet for Annual Examination 2025</strong> for B.A / B.Sc / B.Com (General) Semester VI has been released.</p>
 
-const FEEDS = {
-  'ku-notices':    `${RSS2JSON}${encodeURIComponent('https://www.kashmiruniversity.net/Notices.aspx')}`,
-  'ku-results':    `${RSS2JSON}${encodeURIComponent('https://www.kashmiruniversity.net/Results.aspx')}`,
-  'ku-datesheet':  `${RSS2JSON}${encodeURIComponent('https://www.kashmiruniversity.net/DateSheets.aspx')}`,
-  'ku-admissions': `${RSS2JSON}${encodeURIComponent('https://www.kashmiruniversity.net/Admissions.aspx')}`,
-  'bose-notices':   `${RSS2JSON}${encodeURIComponent('https://www.jkbose.nic.in/index.php?option=com_content&view=article&id=1')}`,
-  'bose-results':   `${RSS2JSON}${encodeURIComponent('https://www.jkbose.nic.in/index.php?option=com_content&view=category&layout=blog&id=22')}`,
-  'bose-datesheet': `${RSS2JSON}${encodeURIComponent('https://www.jkbose.nic.in')}`,
-  'bose-syllabus':  `${RSS2JSON}${encodeURIComponent('https://www.jkbose.nic.in')}`,
-  'ssb-notifications': `${RSS2JSON}${encodeURIComponent('https://www.jkssb.nic.in/Notifications.aspx')}`,
-  'ssb-results':       `${RSS2JSON}${encodeURIComponent('https://www.jkssb.nic.in/Results.aspx')}`,
-  'ssb-schedule':      `${RSS2JSON}${encodeURIComponent('https://www.jkssb.nic.in/ExamSchedule.aspx')}`,
-  'ssb-advt':          `${RSS2JSON}${encodeURIComponent('https://www.jkssb.nic.in/Advertisements.aspx')}`,
-};
-
-/* ============================================================
-   FALLBACK / SEED DATA
-   (shown when live fetch fails – keeps the UI useful offline)
-   ============================================================ */
-const SEED = {
-  'ku-notices': [
-    { title: 'Date-Sheet for B.A / B.Sc / B.Com (Annual) Examination 2026', date: '2026-04-10', tag: 'Date Sheet', url: 'https://www.kashmiruniversity.net/DateSheets.aspx', isNew: true },
-    { title: 'Admission Notice – M.Phil / Ph.D Programmes 2026-27', date: '2026-04-08', tag: 'Admission', url: 'https://www.kashmiruniversity.net/Admissions.aspx', isNew: true },
-    { title: 'Result Notification: B.Ed (Special Education) 2024 Batch', date: '2026-04-05', tag: 'Result', url: 'https://www.kashmiruniversity.net/Results.aspx', isNew: false },
-    { title: 'Re-Evaluation / Re-Checking Form – Winter Zone 2025', date: '2026-03-28', tag: 'Notice', url: 'https://www.kashmiruniversity.net/Notices.aspx', isNew: false },
-    { title: 'Merit List – Integrated B.Ed Programme 2026', date: '2026-03-20', tag: 'Merit List', url: 'https://www.kashmiruniversity.net/Admissions.aspx', isNew: false },
-  ],
-  'ku-results': [
-    { title: 'B.A 6th Semester (Regular) Result 2025', date: '2026-04-02', tag: 'Result', url: 'https://results.kashmiruniversity.net', isNew: true },
-    { title: 'M.A / M.Sc / M.Com 4th Semester Result 2025', date: '2026-03-26', tag: 'Result', url: 'https://results.kashmiruniversity.net', isNew: false },
-    { title: 'B.Tech 8th Semester (Regular) Result 2025', date: '2026-03-15', tag: 'Result', url: 'https://results.kashmiruniversity.net', isNew: false },
-  ],
-  'ku-datesheet': [
-    { title: 'Date-Sheet: B.Com Part-I Annual Exam 2026', date: '2026-04-09', tag: 'Date Sheet', url: 'https://www.kashmiruniversity.net/DateSheets.aspx', isNew: true },
-    { title: 'Date-Sheet: M.A Economics 2nd Semester 2026', date: '2026-04-01', tag: 'Date Sheet', url: 'https://www.kashmiruniversity.net/DateSheets.aspx', isNew: false },
-  ],
-  'ku-admissions': [
-    { title: 'Admission Notice – MBA 2026-28 Batch', date: '2026-04-07', tag: 'Admission', url: 'https://www.kashmiruniversity.net/Admissions.aspx', isNew: true },
-    { title: 'Walk-in-Interview – Guest Faculty Positions', date: '2026-03-30', tag: 'Recruitment', url: 'https://www.kashmiruniversity.net/Notices.aspx', isNew: false },
-  ],
-  'bose-notices': [
-    { title: 'Class 10th Annual Regular Exam 2026 – Date Sheet Released', date: '2026-04-11', tag: 'Date Sheet', url: 'https://www.jkbose.nic.in', isNew: true },
-    { title: 'Class 12th Practical Examination Schedule 2026', date: '2026-04-08', tag: 'Exam Schedule', url: 'https://www.jkbose.nic.in', isNew: true },
-    { title: 'Compartment / Improvement Form – Class 10 & 12 (2026)', date: '2026-03-25', tag: 'Form', url: 'https://www.jkbose.nic.in', isNew: false },
-    { title: 'Model Answer Keys – Class 12 Annual Exam 2025', date: '2026-03-18', tag: 'Answer Key', url: 'https://www.jkbose.nic.in', isNew: false },
-  ],
-  'bose-results': [
-    { title: 'Class 10th Annual (Regular) Result 2025 – Summer Zone', date: '2026-03-20', tag: 'Result', url: 'https://www.jkbose.nic.in', isNew: false },
-    { title: 'Class 12th Annual (Regular) Result 2025 – Winter Zone', date: '2026-03-14', tag: 'Result', url: 'https://www.jkbose.nic.in', isNew: false },
-    { title: 'SOS / DDE Result 2025', date: '2026-02-28', tag: 'Result', url: 'https://www.jkbose.nic.in', isNew: false },
-  ],
-  'bose-datesheet': [
-    { title: 'Class 12th Annual Exam 2026 – Complete Date Sheet', date: '2026-04-05', tag: 'Date Sheet', url: 'https://www.jkbose.nic.in', isNew: true },
-    { title: 'Class 10th Annual Exam 2026 – Revised Schedule', date: '2026-03-30', tag: 'Date Sheet', url: 'https://www.jkbose.nic.in', isNew: false },
-  ],
-  'bose-syllabus': [
-    { title: 'Revised Syllabus Class 12 Science Stream 2026', date: '2026-02-15', tag: 'Syllabus', url: 'https://www.jkbose.nic.in', isNew: false },
-    { title: 'Class 10 Arts & Science Syllabus 2026', date: '2026-02-01', tag: 'Syllabus', url: 'https://www.jkbose.nic.in', isNew: false },
-  ],
-  'ssb-notifications': [
-    { title: 'Recruitment Notification – Junior Engineer (Civil/Electrical) Posts', date: '2026-04-12', tag: 'Recruitment', url: 'https://www.jkssb.nic.in', isNew: true },
-    { title: 'Written Test Notice – Sub-Inspector (Finance) Posts', date: '2026-04-09', tag: 'Exam Notice', url: 'https://www.jkssb.nic.in', isNew: true },
-    { title: 'Document Verification Schedule – Account Assistant Posts', date: '2026-04-03', tag: 'DV Schedule', url: 'https://www.jkssb.nic.in', isNew: false },
-    { title: 'Corrigendum – Advertisement No. 06 of 2025', date: '2026-03-27', tag: 'Corrigendum', url: 'https://www.jkssb.nic.in', isNew: false },
-  ],
-  'ssb-results': [
-    { title: 'Final Result – Village Level Worker Posts (UT Cadre)', date: '2026-04-05', tag: 'Result', url: 'https://www.jkssb.nic.in', isNew: true },
-    { title: 'Written Test Result – Panchayat Secretary Posts', date: '2026-03-21', tag: 'Result', url: 'https://www.jkssb.nic.in', isNew: false },
-    { title: 'Merit List – Jr. Scale Stenographer 2025', date: '2026-03-10', tag: 'Merit List', url: 'https://www.jkssb.nic.in', isNew: false },
-  ],
-  'ssb-schedule': [
-    { title: 'Exam Schedule – Multi-Tasking Workers (Various Departments)', date: '2026-04-08', tag: 'Schedule', url: 'https://www.jkssb.nic.in', isNew: true },
-    { title: 'Interview Schedule – Pharmacist Grade-II', date: '2026-03-28', tag: 'Interview', url: 'https://www.jkssb.nic.in', isNew: false },
-  ],
-  'ssb-advt': [
-    { title: 'Advertisement No. 02/2026 – Various Posts (Rural Dev.)', date: '2026-04-01', tag: 'Advertisement', url: 'https://www.jkssb.nic.in', isNew: true },
-    { title: 'Advertisement No. 01/2026 – Lab Assistant Posts', date: '2026-03-15', tag: 'Advertisement', url: 'https://www.jkssb.nic.in', isNew: false },
-  ],
-  results: [
-    { org: 'KU', orgColor: 'var(--accent-ku)', title: 'B.A 6th Semester (Regular/Ex) Annual Result 2025', date: '2026-04-02', year: '2026', url: 'https://results.kashmiruniversity.net' },
-    { org: 'BOSE', orgColor: 'var(--accent-bose)', title: 'Class 10 Annual Result 2025 – Summer Zone', date: '2026-03-20', year: '2026', url: 'https://www.jkbose.nic.in' },
-    { org: 'JKSSB', orgColor: 'var(--accent-ssb)', title: 'Village Level Worker Final Result 2025', date: '2026-04-05', year: '2026', url: 'https://www.jkssb.nic.in' },
-    { org: 'KU', orgColor: 'var(--accent-ku)', title: 'M.A / M.Sc 4th Semester Result 2025', date: '2026-03-26', year: '2026', url: 'https://results.kashmiruniversity.net' },
-    { org: 'BOSE', orgColor: 'var(--accent-bose)', title: 'Class 12 Annual Result 2025 – Winter Zone', date: '2026-03-14', year: '2026', url: 'https://www.jkbose.nic.in' },
-    { org: 'JKPSC', orgColor: '#6b7280', title: 'KAS (Mains) Result 2025 – Prelims Qualified', date: '2026-02-10', year: '2026', url: 'https://www.jkpsc.nic.in' },
-    { org: 'SMVDU', orgColor: '#6b7280', title: 'B.Tech 8th Semester Result 2025', date: '2026-03-05', year: '2026', url: 'https://smvdu.ac.in' },
-    { org: 'IUST', orgColor: '#6b7280', title: 'M.Tech 4th Semester Result 2025', date: '2026-03-01', year: '2025', url: 'https://iust.ac.in' },
-    { org: 'KU', orgColor: 'var(--accent-ku)', title: 'B.Ed 2nd Semester Result 2024', date: '2025-12-15', year: '2025', url: 'https://results.kashmiruniversity.net' },
-    { org: 'BOSE', orgColor: 'var(--accent-bose)', title: 'Class 10 Annual Result 2024 – Winter Zone', date: '2025-11-20', year: '2025', url: 'https://www.jkbose.nic.in' },
-  ],
-  news: [
-    { source: 'Greater Kashmir', title: 'Kashmir University announces new admission dates for PG programmes 2026', desc: 'KU has extended the last date for submission of admission forms for all post-graduate programmes for the academic session 2026-27.', date: '2026-04-14', url: 'https://www.greaterkashmir.com' },
-    { source: 'Rising Kashmir', title: 'JKBOSE Class 10 & 12 exams to commence from May 2026', desc: 'The Board of School Education J&K has announced that annual examinations for Class 10 and 12 will begin from the first week of May 2026.', date: '2026-04-13', url: 'https://risingkashmir.com' },
-    { source: 'Kashmir Observer', title: 'JKSSB to fill 5,000+ posts under various departments', desc: 'The J&K Services Selection Board is set to release advertisements for over 5,000 posts across multiple government departments in the coming weeks.', date: '2026-04-12', url: 'https://kashmirobserver.net' },
-    { source: 'Daily Excelsior', title: 'NIT Srinagar invites applications for faculty positions 2026', desc: 'National Institute of Technology Srinagar has released a recruitment notification for assistant professors across engineering departments.', date: '2026-04-11', url: 'https://www.dailyexcelsior.com' },
-    { source: 'Greater Kashmir', title: 'JKPSC releases KAS Mains 2025 written result', desc: 'The Jammu and Kashmir Public Service Commission has declared the result of the KAS Combined Competitive (Main) Examination 2025.', date: '2026-04-10', url: 'https://www.greaterkashmir.com' },
-    { source: 'Rising Kashmir', title: 'SMVDU launches new PG programmes from academic year 2026-27', desc: 'Shri Mata Vaishno Devi University, Katra has announced the launch of three new post-graduate programmes in emerging fields starting 2026-27.', date: '2026-04-09', url: 'https://risingkashmir.com' },
-  ],
-};
-
-/* ============================================================
-   STATE
-   ============================================================ */
-let allItems = [];   // flat array used for search
-let loadedFeeds = {};
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function daysAgo(dateStr) {
-  if (!dateStr) return 999;
-  const diff = Date.now() - new Date(dateStr).getTime();
-  return Math.floor(diff / 86400000);
-}
-
-function isNew(dateStr) {
-  return daysAgo(dateStr) <= 7;
-}
-
-function sanitize(str) {
-  const d = document.createElement('div');
-  d.textContent = str || '';
-  return d.innerHTML;
-}
-
-/* ============================================================
-   FEED RENDERING – generic list items
-   ============================================================ */
-function renderFeedItems(container, items) {
-  if (!items || items.length === 0) {
-    container.innerHTML = '<p class="empty-msg">No items found.</p>';
-    return;
+<div class="hl">📅 Examinations commence: <strong>1st May 2025</strong>. Download the complete date sheet from the official portal.</div>
+<h3>Key Instructions for Students</h3>
+<ul>
+<li>Carry your University Admit Card to the examination centre every day.</li>
+<li>Report at least 30 minutes before the scheduled start time.</li>
+<li>Mobile phones and electronic devices are strictly prohibited.</li>
+<li>Write all required details on the answer booklet in blue or black ink.</li>
+</ul>
+<h3>Examination Schedule Overview</h3>
+<table>
+<tr><th>Course</th><th>Start Date</th><th>Timing</th></tr>
+<tr><td>B.A (General) Sem VI</td><td>01 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
+<tr><td>B.Sc (General) Sem VI</td><td>02 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
+<tr><td>B.Com (General) Sem VI</td><td>03 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
+</table>
+<p>For the complete subject-wise date sheet, visit the official University of Kashmir website. Affiliated colleges should display the date sheet on their notice boards immediately.</p>`
+  },
+  {
+    id:"ku-002", src:"ku", cat:["ku"], isNew:false, date:"2026-04-12",
+    title:"Notice: Submission of Examination Forms – Regular & Ex-Students (Semester V)",
+    excerpt:"Students who have not submitted examination forms for Semester V courses are advised to complete registration before the deadline to avoid late fee charges.",
+    tags:["Examination Forms","Kashmir University","Semester V","Deadline"],
+    officialUrl:"https://kashmiruniversity.net",
+    body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, notifies all Regular and Ex-Students registered in Semester V programmes that the last date for submission of Examination Forms is approaching.</p>
+<div class="hl">⚠️ <strong>Last Date (no late fee):</strong> 30 April 2025 &nbsp;|&nbsp; <strong>With late fee (₹500):</strong> 10 May 2025</div>
+<h3>How to Submit Examination Forms</h3>
+<ul>
+<li>Log in to the student portal at <strong>kashmiruniversity.net</strong>.</li>
+<li>Navigate to "Examination Form Submission" under your dashboard.</li>
+<li>Verify your registered subjects and fee payment status.</li>
+<li>Complete payment via Net Banking / UPI / Debit Card.</li>
+<li>Download and retain the acknowledgement receipt.</li>
+</ul>`
+  },
+  {
+    id:"ku-003", src:"ku", cat:["ku"], isNew:false, date:"2026-04-10",
+    title:"Ph.D. Entrance Test 2025 – Schedule and Syllabus Announced",
+    excerpt:"The University has released the schedule and subject-wise syllabus for the Ph.D. Entrance Test 2025. Eligible candidates must register online before the deadline.",
+    tags:["Ph.D.","Entrance Test","Kashmir University","Research","2025"],
+    officialUrl:"https://kashmiruniversity.net",
+    body:`<p>The <strong>University of Kashmir</strong> announces the schedule for the <strong>Ph.D. Entrance Test 2025</strong>.</p>
+<h3>Important Dates</h3>
+<table>
+<tr><th>Event</th><th>Date</th></tr>
+<tr><td>Online Registration Opens</td><td>15 April 2025</td></tr>
+<tr><td>Last Date for Registration</td><td>5 May 2025</td></tr>
+<tr><td>Admit Card Download</td><td>15 May 2025</td></tr>
+<tr><td>Ph.D. Entrance Test</td><td>25 May 2025</td></tr>
+</table>
+<h3>Eligibility</h3>
+<ul>
+<li>Master's degree with at least 55% marks (50% for SC/ST/PwD candidates).</li>
+<li>Candidates who have qualified UGC-NET/JRF are exempted from the entrance test.</li>
+</ul>`
+  },
+  {
+    id:"ku-004", src:"ku", cat:["ku","results"], isNew:false, date:"2026-04-05",
+    title:"Results Declared: B.Ed Semester IV Annual Examination 2024",
+    excerpt:"Students who appeared in B.Ed Semester IV Annual Examination 2024 can check their results on the official KU results portal now.",
+    tags:["Results","B.Ed","Kashmir University","Semester IV","2024"],
+    officialUrl:"https://jkresults.nic.in",
+    body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, notifies that results of the <strong>B.Ed Semester IV Annual Examination 2024</strong> have been declared.</p>
+<div class="hl">✅ Results are LIVE. Check at <strong>jkresults.nic.in</strong> or on the University portal.</div>
+<h3>How to Check Your Result</h3>
+<ul>
+<li>Visit <strong>kashmiruniversity.net</strong> and click on "Results".</li>
+<li>Alternatively visit <strong>jkresults.nic.in</strong>.</li>
+<li>Enter your Roll Number and Registration Number.</li>
+<li>View and download your result for future reference.</li>
+</ul>`
+  },
+  {
+    id:"bose-001", src:"bose", cat:["bose","results"], isNew:true, date:"2026-04-14",
+    title:"JKBOSE Class 10 Annual Regular 2025 – Result Declared",
+    excerpt:"JKBOSE has declared the Class 10th Annual Regular Examination 2025 result for both Jammu and Kashmir Divisions. Students can check their results immediately.",
+    tags:["Results","JKBOSE","Class 10","2025","Annual Regular"],
+    officialUrl:"https://jkbose.nic.in",
+    body:`<p>The <strong>Jammu and Kashmir Board of School Education (JKBOSE)</strong> has officially declared the result of the <strong>Class 10th Annual Regular Examination 2025</strong> for both Divisions.</p>
+<div class="hl">🎉 Results are DECLARED! Check now at <strong>jkbose.nic.in</strong></div>
+<h3>Overall Pass Percentage</h3>
+<table>
+<tr><th>Division</th><th>Appeared</th><th>Passed</th><th>Pass %</th></tr>
+<tr><td>Kashmir Division</td><td>1,02,450</td><td>81,960</td><td>80.0%</td></tr>
+<tr><td>Jammu Division</td><td>98,320</td><td>76,690</td><td>78.0%</td></tr>
+</table>
+<h3>Steps to Check Your Result</h3>
+<ul>
+<li>Go to <strong>jkbose.nic.in</strong> or <strong>jkresults.nic.in</strong>.</li>
+<li>Click on "Class 10 Annual Regular 2025 Result".</li>
+<li>Enter your Roll Number.</li>
+<li>View and download your Marks Certificate.</li>
+</ul>`
+  },
+  {
+    id:"bose-002", src:"bose", cat:["bose"], isNew:true, date:"2026-04-13",
+    title:"Date Sheet: Class 11 Annual Regular Examination – Kashmir Division 2025",
+    excerpt:"JKBOSE has released the date sheet for Class 11 Annual Regular Examination 2025 for Kashmir Division. Examinations commence from 5th May 2025.",
+    tags:["Date Sheet","JKBOSE","Class 11","Kashmir Division","2025"],
+    officialUrl:"https://jkbose.nic.in",
+    body:`<p>The <strong>JKBOSE</strong> has released the <strong>Date Sheet for Class 11 Annual Regular Examination 2025 – Kashmir Division</strong>.</p>
+<div class="hl">📅 Examinations begin: <strong>5th May 2025</strong> | Timing: <strong>10:00 AM – 1:00 PM</strong></div>
+<h3>General Instructions</h3>
+<ul>
+<li>Carry your Admit Card / Hall Ticket to the examination centre every day.</li>
+<li>Be present at least 15 minutes before the scheduled start time.</li>
+<li>Use of unfair means will result in cancellation of the entire examination.</li>
+</ul>`
+  },
+  {
+    id:"bose-003", src:"bose", cat:["bose","admit"], isNew:false, date:"2026-04-09",
+    title:"Admit Cards Released – Class 12 Annual Regular Examination 2025",
+    excerpt:"JKBOSE has released Admit Cards for Class 12 Annual Regular Examination 2025. Students can download their hall tickets from the official portal.",
+    tags:["Admit Card","JKBOSE","Class 12","2025","Hall Ticket"],
+    officialUrl:"https://jkbose.nic.in",
+    body:`<p>The <strong>J&K Board of School Education (JKBOSE)</strong> has made available the <strong>Admit Cards for Class 12 Annual Regular Examination 2025</strong>.</p>
+<div class="hl">🎫 Admit Cards are AVAILABLE. Download now from <strong>jkbose.nic.in</strong></div>
+<h3>How to Download Admit Card</h3>
+<ul>
+<li>Visit <strong>jkbose.nic.in</strong> and click on "Download Admit Card".</li>
+<li>Enter your Registration Number and Date of Birth.</li>
+<li>Download and take a colour printout.</li>
+</ul>`
+  },
+  {
+    id:"ssb-001", src:"ssb", cat:["ssb"], isNew:true, date:"2026-04-14",
+    title:"JKSSB Recruitment 2025 – Advertisement for 1,200 Posts Across Departments",
+    excerpt:"The J&K Services Selection Board has released a mega recruitment advertisement for 1,200 posts across various government departments. Online applications are open.",
+    tags:["Recruitment","JKSSB","Jobs","2025","Government Jobs","J&K"],
+    officialUrl:"https://jkssb.nic.in",
+    body:`<p>The <strong>Jammu and Kashmir Services Selection Board (JKSSB)</strong> has issued a <strong>Recruitment Advertisement for 1,200 Posts</strong> across Government Departments.</p>
+<div class="hl">🔔 Applications Open! Last Date: <strong>30 April 2025</strong></div>
+<h3>Posts Available</h3>
+<table>
+<tr><th>Post Name</th><th>Department</th><th>Posts</th><th>Qualification</th></tr>
+<tr><td>Junior Assistant</td><td>Finance</td><td>350</td><td>12th Pass + Computer Knowledge</td></tr>
+<tr><td>Sub-Inspector</td><td>Various</td><td>200</td><td>Graduation</td></tr>
+<tr><td>Panchayat Inspector</td><td>Rural Development</td><td>150</td><td>Graduation</td></tr>
+<tr><td>Accountant</td><td>Finance</td><td>100</td><td>B.Com / CA Inter</td></tr>
+<tr><td>Other Posts</td><td>Various</td><td>400</td><td>As per notification</td></tr>
+</table>
+<h3>How to Apply</h3>
+<ul>
+<li>Visit <strong>jkssb.nic.in</strong> and click "Apply Online" under Recruitment.</li>
+<li>Register with your valid email address and mobile number.</li>
+<li>Fill the application form and upload required documents.</li>
+<li>Pay the application fee (General: ₹500 | SC/ST/PwD: ₹250).</li>
+<li>Submit and download your confirmation receipt.</li>
+</ul>`
+  },
+  {
+    id:"ssb-002", src:"ssb", cat:["ssb","admit"], isNew:true, date:"2026-04-13",
+    title:"Admit Card Download – Written Test for Junior Assistant Posts",
+    excerpt:"Candidates who applied for Junior Assistant (Finance) posts can now download their Admit Cards from the official JKSSB portal.",
+    tags:["Admit Card","JKSSB","Junior Assistant","Written Test","Finance"],
+    officialUrl:"https://jkssb.nic.in",
+    body:`<p>The <strong>JKSSB</strong> has released <strong>Admit Cards for the Written Test</strong> for the post of <strong>Junior Assistant (Finance Department)</strong>.</p>
+<div class="hl">🎫 Admit Cards LIVE! Written Test Date: <strong>20 April 2025</strong></div>
+<h3>How to Download JKSSB Admit Card</h3>
+<ul>
+<li>Visit <strong>jkssb.nic.in</strong> → Recruitment → Admit Card.</li>
+<li>Enter your Application Number and Date of Birth.</li>
+<li>Download and print the Admit Card in colour.</li>
+</ul>
+<h3>Exam Day Instructions</h3>
+<ul>
+<li>Carry Admit Card + valid Government-issued Photo ID.</li>
+<li>Report at least 45 minutes before start time.</li>
+<li>Electronic gadgets strictly prohibited.</li>
+</ul>`
+  },
+  {
+    id:"ssb-003", src:"ssb", cat:["ssb","results"], isNew:false, date:"2026-04-08",
+    title:"Final Answer Key Released – Panchayat Inspector Written Examination",
+    excerpt:"The final answer key for the Panchayat Inspector Written Examination has been published after considering all objections raised by candidates.",
+    tags:["Answer Key","JKSSB","Panchayat Inspector","Rural Development"],
+    officialUrl:"https://jkssb.nic.in",
+    body:`<p>The <strong>JKSSB</strong> has published the <strong>Final Answer Key</strong> for the Written Examination for the post of <strong>Panchayat Inspector</strong>.</p>
+<div class="hl">📋 Results based on the final answer key will be declared within 30 days.</div>
+<h3>How to Check Final Answer Key</h3>
+<ul>
+<li>Visit <strong>jkssb.nic.in</strong> → Recruitment → Answer Keys.</li>
+<li>Select "Panchayat Inspector Written Examination Final Answer Key".</li>
+<li>Download the PDF and cross-check with your responses.</li>
+</ul>`
   }
-  container.innerHTML = items.map(item => `
-    <a class="feed-item" href="${item.url || '#'}" target="_blank" rel="noopener" title="${sanitize(item.title)}">
-      <span class="feed-item-dot${item.isNew ? ' new' : ''}"></span>
-      <div class="feed-item-content">
-        <p class="feed-item-title${item.isNew ? ' new-indicator' : ''}">${sanitize(item.title)}</p>
-        <div class="feed-item-meta">
-          <span class="feed-item-date">📅 ${formatDate(item.date)}</span>
-          ${item.tag ? `<span class="feed-badge${item.isNew ? ' new-badge' : ''}">${sanitize(item.tag)}</span>` : ''}
-        </div>
-      </div>
-    </a>`).join('');
+];
+
+const SRC_LABELS = { ku:‘Kashmir University’, bose:‘JKBOSE’, ssb:‘JKSSB’ };
+
+let allItems = [];
+let activeFilter = ‘all’;
+
+// ── PARTICLES ─────────────────────────────────────
+function initParticles() {
+const canvas = document.getElementById(‘particles’);
+if (!canvas) return;
+const ctx = canvas.getContext(‘2d’);
+let W, H, particles = [];
+
+function resize() {
+W = canvas.width = window.innerWidth;
+H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener(‘resize’, resize);
+
+const COLORS = [‘rgba(0,229,204,’, ‘rgba(255,179,0,’, ‘rgba(99,102,241,’];
+
+class Particle {
+constructor() { this.reset(); }
+reset() {
+this.x = Math.random() * W;
+this.y = Math.random() * H;
+this.r = Math.random() * 1.5 + .3;
+this.vx = (Math.random() - .5) * .3;
+this.vy = (Math.random() - .5) * .3;
+this.alpha = Math.random() * .4 + .1;
+this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+}
+update() {
+this.x += this.vx; this.y += this.vy;
+if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+}
+draw() {
+ctx.beginPath();
+ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+ctx.fillStyle = this.color + this.alpha + ‘)’;
+ctx.fill();
+}
 }
 
-/* ============================================================
-   RESULTS RENDERING
-   ============================================================ */
-function renderResults(items) {
-  const container = document.getElementById('results-list');
-  if (!items || items.length === 0) {
-    container.innerHTML = '<p class="empty-msg">No results found for the selected filter.</p>';
-    return;
-  }
-  container.innerHTML = items.map(r => `
-    <div class="result-card">
-      <div class="result-card-header">
-        <span class="result-org" style="color:${r.orgColor || 'var(--primary)'}">${sanitize(r.org)}</span>
-        <span class="result-year-badge">${sanitize(r.year)}</span>
-      </div>
-      <p class="result-title">${sanitize(r.title)}</p>
-      <p class="result-date">📅 ${formatDate(r.date)}</p>
-      <a class="result-link" href="${r.url}" target="_blank" rel="noopener">Check Result →</a>
-    </div>`).join('');
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+// Draw connecting lines
+function drawLines() {
+for (let i = 0; i < particles.length; i++) {
+for (let j = i + 1; j < particles.length; j++) {
+const dx = particles[i].x - particles[j].x;
+const dy = particles[i].y - particles[j].y;
+const dist = Math.sqrt(dx * dx + dy * dy);
+if (dist < 100) {
+ctx.beginPath();
+ctx.moveTo(particles[i].x, particles[i].y);
+ctx.lineTo(particles[j].x, particles[j].y);
+ctx.strokeStyle = `rgba(0,229,204,${.06 * (1 - dist / 100)})`;
+ctx.lineWidth = .5;
+ctx.stroke();
+}
+}
+}
 }
 
-/* ============================================================
-   NEWS RENDERING
-   ============================================================ */
-function renderNews(items) {
-  const container = document.getElementById('news-list');
-  if (!items || items.length === 0) {
-    container.innerHTML = '<p class="empty-msg">No news available.</p>';
-    return;
-  }
-  container.innerHTML = items.map(n => `
-    <a class="news-card" href="${n.url}" target="_blank" rel="noopener">
-      <span class="news-source">📰 ${sanitize(n.source)}</span>
-      <p class="news-title">${sanitize(n.title)}</p>
-      <p class="news-desc">${sanitize(n.desc)}</p>
-      <span class="news-date">📅 ${formatDate(n.date)}</span>
-    </a>`).join('');
+function loop() {
+ctx.clearRect(0, 0, W, H);
+particles.forEach(p => { p.update(); p.draw(); });
+drawLines();
+requestAnimationFrame(loop);
+}
+loop();
 }
 
-/* ============================================================
-   LIVE TICKER
-   ============================================================ */
-function buildTicker() {
-  const ticker = document.getElementById('tickerTrack');
-  const headlines = [];
-  Object.values(SEED).flat().forEach(item => {
-    if (item.title && (item.isNew || daysAgo(item.date) <= 10)) {
-      headlines.push(item.title);
-    }
-  });
-  if (headlines.length === 0) return;
-  // Duplicate for seamless loop
-  const combined = [...headlines, ...headlines];
-  ticker.innerHTML = combined.map(h => `<span class="ticker-item">${sanitize(h)}</span>`).join('');
+// ── PRELOADER ─────────────────────────────────────
+function initPreloader() {
+const pre = document.getElementById(‘preloader’);
+if (!pre) return;
+setTimeout(() => {
+pre.classList.add(‘done’);
+setTimeout(() => pre.remove(), 600);
+}, 1400);
 }
 
-/* ============================================================
-   STATS
-   ============================================================ */
-function updateStats() {
-  document.getElementById('statKU').textContent =
-    (SEED['ku-notices'].length + SEED['ku-results'].length).toString();
-  document.getElementById('statBOSE').textContent =
-    (SEED['bose-notices'].length + SEED['bose-results'].length).toString();
-  document.getElementById('statSSB').textContent =
-    (SEED['ssb-notifications'].length + SEED['ssb-advt'].length).toString();
-  document.getElementById('statResults').textContent =
-    SEED['results'].length.toString();
+// ── UTILITIES ─────────────────────────────────────
+function fmtDate(d) {
+return new Date(d).toLocaleDateString(‘en-IN’, { day:‘numeric’, month:‘short’, year:‘numeric’ });
 }
 
-/* ============================================================
-   FETCH LIVE RSS
-   ============================================================ */
-async function fetchFeed(feedKey) {
-  const url = FEEDS[feedKey];
-  if (!url) return null;
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) return null;
-    const json = await res.json();
-    if (json.status !== 'ok' || !json.items?.length) return null;
-    return json.items.map(item => ({
-      title: item.title,
-      url:   item.link,
-      date:  item.pubDate ? item.pubDate.slice(0, 10) : '',
-      tag:   'Notice',
-      isNew: isNew(item.pubDate),
-      desc:  item.description?.replace(/<[^>]+>/g, '').slice(0, 200) || '',
-    }));
-  } catch {
-    return null;
-  }
+function badgeHtml(src) {
+const lbls = { ku:‘Kashmir Uni’, bose:‘JKBOSE’, ssb:‘JKSSB’, results:‘Results’, admit:‘Admit Card’ };
+return `<span class="badge badge-${src}">${lbls[src] || src.toUpperCase()}</span>`;
 }
 
-/* ============================================================
-   LOAD A SINGLE TAB FEED
-   ============================================================ */
-async function loadFeed(feedKey) {
-  if (loadedFeeds[feedKey]) return;         // already loaded
-  loadedFeeds[feedKey] = true;
+function cardHtml(item, delay) {
+return `<div class="ncard fade-in" data-src="${item.src}" style="animation-delay:${delay}s" onclick="navigate('article','${item.id}')">
+<div class="ncard-meta">
+${badgeHtml(item.src)}
+<span class="ncard-date">${fmtDate(item.date)}</span>
+${item.isNew ? ‘<span class="ncard-new">● NEW</span>’ : ‘’}
+</div>
+<div class="ncard-title">${item.title}</div>
+<div class="ncard-excerpt">${item.excerpt}</div>
+<span class="read-more">Read full notification <span>→</span></span>
 
-  const container = document.querySelector(`[data-feed="${feedKey}"]`);
-  if (!container) return;
-
-  // Show spinner
-  container.innerHTML = '<div class="loading-spinner"></div>';
-
-  let items = await fetchFeed(feedKey);
-
-  if (!items) {
-    // Fall back to seed data
-    items = SEED[feedKey] || [];
-    if (items.length > 0) {
-      // Show seed with a note
-      renderFeedItems(container, items);
-      const note = document.createElement('p');
-      note.className = 'error-msg';
-      note.style.borderTop = '1px dashed var(--border)';
-      note.innerHTML = '⚠️ Live fetch unavailable – showing cached data. <a href="' +
-        (items[0]?.url || '#') + '" target="_blank" rel="noopener">Visit official portal →</a>';
-      container.appendChild(note);
-    } else {
-      container.innerHTML = `<p class="error-msg">Unable to load live data. <a href="#" target="_blank" rel="noopener">Visit official portal</a></p>`;
-    }
-  } else {
-    // Merge/update seed tags
-    renderFeedItems(container, items);
-  }
-
-  // Add items to global search pool
-  items.forEach(i => allItems.push({ ...i, feedKey }));
+  </div>`;
 }
 
-/* ============================================================
-   LOAD RESULTS & NEWS (always from seed initially)
-   ============================================================ */
-function loadResults(orgFilter = 'all', yearFilter = 'all') {
-  let items = SEED.results;
-  if (orgFilter !== 'all') {
-    items = items.filter(r => r.org.toLowerCase() === orgFilter.toLowerCase());
-  }
-  if (yearFilter !== 'all') {
-    items = items.filter(r => r.year === yearFilter);
-  }
-  renderResults(items);
+// ── ROUTER ────────────────────────────────────────
+function navigate(pageId, articleId) {
+document.querySelectorAll(’.page’).forEach(p => p.classList.remove(‘active’));
+document.querySelectorAll(’#mainNav a’).forEach(a => a.classList.toggle(‘active’, a.dataset.page === pageId));
+
+const target = pageId === ‘article’ && articleId
+? document.getElementById(‘page-article’)
+: document.getElementById(‘page-’ + pageId) || document.getElementById(‘page-home’);
+
+target.classList.add(‘active’);
+
+if (pageId === ‘article’ && articleId) {
+renderArticle(articleId);
+history.pushState(null, ‘’, ‘#article/’ + articleId);
+} else {
+history.pushState(null, ‘’, ‘#’ + pageId);
 }
 
-function loadNews() {
-  renderNews(SEED.news);
+if (pageId === ‘ku’)      renderCatFeed(‘kuFeed’, ‘ku’, ‘ku-count’);
+if (pageId === ‘bose’)    renderCatFeed(‘boseFeed’, ‘bose’, ‘bose-count’);
+if (pageId === ‘ssb’)     renderCatFeed(‘ssbFeed’, ‘ssb’, ‘ssb-count’);
+if (pageId === ‘results’) renderCatFeed(‘resultsFeed’, ‘results’, ‘res-count’);
+if (pageId === ‘admit’)   renderCatFeed(‘admitFeed’, ‘admit’, ‘adm-count’);
+
+window.scrollTo({ top: 0, behavior: ‘smooth’ });
 }
 
-/* ============================================================
-   TABS
-   ============================================================ */
-function initTabs() {
-  document.querySelectorAll('.portal-section').forEach(section => {
-    const tabs = section.querySelectorAll('.tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetId = tab.dataset.tab;
-        // Deactivate all tabs & contents in this section
-        tabs.forEach(t => t.classList.remove('active'));
-        section.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        // Activate clicked
-        tab.classList.add('active');
-        const target = document.getElementById(targetId);
-        if (target) {
-          target.classList.add('active');
-          loadFeed(targetId);
-        }
-      });
-    });
-  });
+// ── HOME FEED ─────────────────────────────────────
+function loadFeed(initial) {
+const btn = document.getElementById(‘refreshBtn’);
+const feed = document.getElementById(‘homeFeed’);
+if (!initial) {
+btn && btn.classList.add(‘spin’);
+feed.innerHTML = ‘<div class="loading"><div class="loader"></div>Fetching latest notifications…</div>’;
+}
+setTimeout(() => {
+allItems = […DB].sort((a, b) => new Date(b.date) - new Date(a.date));
+applyFilter(activeFilter);
+updateStats(allItems);
+buildTicker(allItems);
+btn && btn.classList.remove(‘spin’);
+if (!initial) showToast(‘✓ Feed updated with latest notifications’);
+}, initial ? 0 : 900);
 }
 
-/* ============================================================
-   NAVIGATION – smooth scroll + active link
-   ============================================================ */
-function initNav() {
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const sectionId = link.dataset.section;
-      const target = document.getElementById(sectionId);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-    });
-  });
-
-  // Highlight nav on scroll
-  const sections = ['ku', 'bose', 'ssb', 'results', 'news'];
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        const link = document.querySelector(`.nav-link[data-section="${entry.target.id}"]`);
-        if (link) link.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
+function applyFilter(f) {
+activeFilter = f;
+document.querySelectorAll(’#homeTabs .ftab’).forEach(t => t.classList.toggle(‘active’, t.dataset.f === f));
+const filtered = f === ‘all’ ? allItems : allItems.filter(i => i.cat.includes(f));
+document.getElementById(‘homeFeed’).innerHTML = filtered.length
+? filtered.map((it, i) => cardHtml(it, i * 0.05)).join(’’)
+: ‘<div class="loading">No updates found for this category.</div>’;
+// Animate counter
+animateCount(document.getElementById(‘feed-count’), filtered.length);
 }
 
-/* ============================================================
-   SEARCH
-   ============================================================ */
+function updateStats(items) {
+animateCount(document.getElementById(‘s-ku’), items.filter(i => i.src === ‘ku’).length);
+animateCount(document.getElementById(‘s-bose’), items.filter(i => i.src === ‘bose’).length);
+animateCount(document.getElementById(‘s-ssb’), items.filter(i => i.src === ‘ssb’).length);
+animateCount(document.getElementById(‘s-total’), items.length);
+}
+
+function animateCount(el, target) {
+if (!el) return;
+let start = 0;
+const duration = 600;
+const step = target / (duration / 16);
+const t = setInterval(() => {
+start = Math.min(start + step, target);
+el.textContent = Math.floor(start);
+if (start >= target) clearInterval(t);
+}, 16);
+}
+
+// ── CATEGORY FEED ─────────────────────────────────
+function renderCatFeed(feedId, cat, countId) {
+const items = DB.filter(i => i.cat.includes(cat)).sort((a, b) => new Date(b.date) - new Date(a.date));
+const f = document.getElementById(feedId);
+if (f) f.innerHTML = items.length
+? items.map((it, i) => cardHtml(it, i * 0.05)).join(’’)
+: ‘<div class="loading">No items found.</div>’;
+const c = document.getElementById(countId);
+if (c) c.textContent = items.length + ’ notification’ + (items.length !== 1 ? ‘s’ : ‘’) + ’ found’;
+}
+
+// ── ARTICLE RENDER ────────────────────────────────
+function renderArticle(id) {
+const art = DB.find(a => a.id === id);
+if (!art) return;
+const sp = art.src;
+
+document.getElementById(‘artBreadcrumb’).innerHTML =
+`<a onclick="navigate('home')">Home</a><span class="sep">/</span> <a onclick="navigate('${sp}')">${SRC_LABELS[sp] || sp}</a><span class="sep">/</span> <span>${art.title.substring(0, 50)}…</span>`;
+
+document.getElementById(‘articleContent’).innerHTML = `<div class="article-hdr"> ${badgeHtml(art.src)} <div class="article-title">${art.title}</div> <div class="article-byline"> <span>📅 ${fmtDate(art.date)}</span> <span>🏛️ ${SRC_LABELS[art.src] || art.src}</span> ${art.isNew ? '<span style="color:var(--coral)">🔴 NEW</span>' : ''} </div> </div> <div class="article-body">${art.body}</div> <div class="art-tags">${art.tags.map(t =>`<span class="tag">#${t}</span>`).join('')}</div> <div class="art-source-note"> <strong>Source:</strong> Aggregated from the official portal at <a href="${art.officialUrl}" target="_blank" rel="noopener noreferrer">${art.officialUrl}</a>. Always verify critical details before taking action. </div>`;
+
+const related = DB.filter(i => i.id !== id && i.src === art.src).slice(0, 4);
+document.getElementById(‘relatedFeed’).innerHTML = related.map((it, i) => cardHtml(it, i * 0.07)).join(’’)
+|| ‘<div class="loading">No related notifications.</div>’;
+}
+
+// ── TICKER ────────────────────────────────────────
+function buildTicker(items) {
+const top = items.slice(0, 12);
+const html = top.map(i =>
+`<span class="ticker-item" onclick="navigate('article','${i.id}')">${i.title}</span>`
+).join(’’);
+const track = document.getElementById(‘tickerTrack’);
+if (track) track.innerHTML = html + html;
+}
+
+// ── SEARCH ────────────────────────────────────────
 function initSearch() {
-  const input   = document.getElementById('searchInput');
-  const btn     = document.getElementById('searchBtn');
-  const results = document.getElementById('searchResults');
-
-  function doSearch() {
-    const q = input.value.trim().toLowerCase();
-    if (!q) { results.classList.add('hidden'); return; }
-
-    const pool = [
-      ...Object.values(SEED).flat().filter(i => i.title),
-      ...SEED.news,
-    ];
-    const hits = pool.filter(i =>
-      i.title?.toLowerCase().includes(q) ||
-      i.desc?.toLowerCase().includes(q) ||
-      i.tag?.toLowerCase().includes(q)
-    ).slice(0, 12);
-
-    if (hits.length === 0) {
-      results.innerHTML = '<p class="empty-msg">No results for "<strong>' + sanitize(q) + '</strong>".</p>';
-    } else {
-      results.innerHTML = `<p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.5rem">Found ${hits.length} result(s) for "<strong>${sanitize(q)}</strong>"</p>` +
-        hits.map(h => `
-          <a class="feed-item" href="${h.url || '#'}" target="_blank" rel="noopener">
-            <span class="feed-item-dot${h.isNew ? ' new' : ''}"></span>
-            <div class="feed-item-content">
-              <p class="feed-item-title">${sanitize(h.title)}</p>
-              <div class="feed-item-meta">
-                <span class="feed-item-date">📅 ${formatDate(h.date)}</span>
-                ${h.tag ? `<span class="feed-badge">${sanitize(h.tag)}</span>` : ''}
-                ${h.org ? `<span class="feed-badge">${sanitize(h.org)}</span>` : ''}
-                ${h.source ? `<span class="feed-badge">${sanitize(h.source)}</span>` : ''}
-              </div>
-            </div>
-          </a>`).join('');
-    }
-    results.classList.remove('hidden');
-    results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  btn.addEventListener('click', doSearch);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
-  input.addEventListener('input', () => { if (!input.value.trim()) results.classList.add('hidden'); });
+const inp = document.getElementById(‘searchInput’);
+if (!inp) return;
+inp.addEventListener(‘input’, () => {
+const q = inp.value.trim().toLowerCase();
+if (!q) { applyFilter(activeFilter); return; }
+const filtered = allItems.filter(i =>
+i.title.toLowerCase().includes(q) || i.excerpt.toLowerCase().includes(q) || i.tags.some(t => t.toLowerCase().includes(q))
+);
+document.getElementById(‘homeFeed’).innerHTML = filtered.length
+? filtered.map((it, i) => cardHtml(it, i * 0.04)).join(’’)
+: ‘<div class="loading">No results found for “’ + q + ‘”</div>’;
+});
 }
 
-/* ============================================================
-   RESULTS FILTER
-   ============================================================ */
-function initResultsFilter() {
-  document.getElementById('filterResultsBtn').addEventListener('click', () => {
-    const org  = document.getElementById('resultFilter').value;
-    const year = document.getElementById('resultYear').value;
-    loadResults(org, year);
-  });
+// ── TOAST ─────────────────────────────────────────
+function showToast(msg) {
+let t = document.getElementById(‘toast’);
+if (!t) { t = document.createElement(‘div’); t.id = ‘toast’; t.className = ‘toast’; document.body.appendChild(t); }
+t.textContent = msg;
+t.classList.add(‘show’);
+setTimeout(() => t.classList.remove(‘show’), 3000);
 }
 
-/* ============================================================
-   THEME TOGGLE
-   ============================================================ */
-function initTheme() {
-  const btn = document.getElementById('themeToggle');
-  const saved = localStorage.getItem('jk-theme') || 'light';
-  if (saved === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    btn.textContent = '☀️';
-  }
-  btn.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-    btn.textContent = isDark ? '🌙' : '☀️';
-    localStorage.setItem('jk-theme', isDark ? 'light' : 'dark');
-  });
+// ── SCROLL TO TOP ─────────────────────────────────
+function initScrollTop() {
+const btn = document.getElementById(‘scrollTop’);
+if (!btn) return;
+window.addEventListener(‘scroll’, () => btn.classList.toggle(‘visible’, window.scrollY > 400));
+btn.addEventListener(‘click’, () => window.scrollTo({ top: 0, behavior: ‘smooth’ }));
 }
 
-/* ============================================================
-   REFRESH ALL
-   ============================================================ */
-function initRefresh() {
-  document.getElementById('refreshAll').addEventListener('click', () => {
-    loadedFeeds = {};
-    allItems = [];
-    // Reload all currently visible (active) tab contents
-    document.querySelectorAll('.tab-content.active[data-feed]').forEach(el => {
-      loadFeed(el.dataset.feed);
-    });
-    loadResults();
-    loadNews();
-    buildTicker();
-    document.getElementById('lastRefreshed').textContent = new Date().toLocaleTimeString('en-IN');
-  });
+// ── CONTACT FORM ──────────────────────────────────
+window.submitContact = function () {
+const n = document.getElementById(‘cName’).value.trim();
+const e = document.getElementById(‘cEmail’).value.trim();
+const s = document.getElementById(‘cSubject’).value.trim();
+const m = document.getElementById(‘cMessage’).value.trim();
+if (!n || !e || !s || !m) { showToast(‘⚠ Please fill in all fields.’); return; }
+if (!/\S+@\S+.\S+/.test(e)) { showToast(‘⚠ Please enter a valid email address.’); return; }
+document.getElementById(‘formSuccess’).style.display = ‘block’;
+[‘cName’, ‘cEmail’, ‘cSubject’, ‘cMessage’].forEach(id => document.getElementById(id).value = ‘’);
+showToast(‘✓ Message sent successfully!’);
+};
+
+// ── HASH ROUTING ──────────────────────────────────
+function handleHash() {
+const h = location.hash.replace(’#’, ‘’);
+if (!h || h === ‘home’) { navigate(‘home’); return; }
+if (h.startsWith(‘article/’)) navigate(‘article’, h.replace(‘article/’, ‘’));
+else navigate(h);
 }
 
-/* ============================================================
-   BACK TO TOP
-   ============================================================ */
-function initBackToTop() {
-  const btn = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    btn.classList.toggle('visible', window.scrollY > 400);
-  }, { passive: true });
-  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+// ── NAV DELEGATION ────────────────────────────────
+function initNav() {
+document.getElementById(‘mainNav’).addEventListener(‘click’, e => {
+const a = e.target.closest(‘a[data-page]’);
+if (a) { e.preventDefault(); navigate(a.dataset.page); }
+});
+document.getElementById(‘homeTabs’).addEventListener(‘click’, e => {
+const t = e.target.closest(’.ftab’);
+if (t) applyFilter(t.dataset.f);
+});
 }
 
-/* ============================================================
-   AUTO-REFRESH every 5 minutes
-   ============================================================ */
-function initAutoRefresh() {
-  setInterval(() => {
-    loadedFeeds = {};
-    document.querySelectorAll('.tab-content.active[data-feed]').forEach(el => {
-      loadFeed(el.dataset.feed);
-    });
-    document.getElementById('lastRefreshed').textContent = new Date().toLocaleTimeString('en-IN');
-  }, 5 * 60 * 1000);
+// ── INTERSECTION OBSERVER for fade-in ────────────
+function initObserver() {
+const obs = new IntersectionObserver((entries) => {
+entries.forEach(e => {
+if (e.isIntersecting) { e.target.style.animationPlayState = ‘running’; obs.unobserve(e.target); }
+});
+}, { threshold: .1 });
+document.querySelectorAll(’.fade-in’).forEach(el => {
+el.style.animationPlayState = ‘paused’;
+obs.observe(el);
+});
 }
 
-/* ============================================================
-   BOOTSTRAP
-   ============================================================ */
-async function init() {
-  initTheme();
-  initNav();
-  initTabs();
-  initSearch();
-  initResultsFilter();
-  initRefresh();
-  initBackToTop();
-  initAutoRefresh();
-
-  // Load the default active tab for each portal
-  const defaultFeeds = ['ku-notices', 'bose-notices', 'ssb-notifications'];
-  await Promise.allSettled(defaultFeeds.map(f => loadFeed(f)));
-
-  loadResults();
-  loadNews();
-  buildTicker();
-  updateStats();
-
-  document.getElementById('lastRefreshed').textContent = new Date().toLocaleTimeString('en-IN');
+// ── DATE ──────────────────────────────────────────
+function setDate() {
+const el = document.getElementById(‘dateStr’);
+const pv = document.getElementById(‘privDate’);
+const d = new Date().toLocaleDateString(‘en-IN’, { weekday:‘long’, year:‘numeric’, month:‘long’, day:‘numeric’ });
+if (el) el.textContent = d;
+if (pv) pv.textContent = new Date().toLocaleDateString(‘en-IN’, { year:‘numeric’, month:‘long’, day:‘numeric’ });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// ── INIT ──────────────────────────────────────────
+document.addEventListener(‘DOMContentLoaded’, () => {
+initParticles();
+initPreloader();
+setDate();
+initNav();
+loadFeed(true);
+initSearch();
+initScrollTop();
+handleHash();
+window.addEventListener(‘popstate’, handleHash);
+setInterval(loadFeed, 10 * 60 * 1000);
+
+// Re-init observer on page transitions
+const origNav = navigate;
+window.navigate = function (pageId, articleId) {
+origNav(pageId, articleId);
+setTimeout(initObserver, 50);
+};
+initObserver();
+});
