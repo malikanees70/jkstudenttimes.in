@@ -1,964 +1,181 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="description" content="JKUpdates.in – Latest notifications, results, date sheets and recruitment from Kashmir University, JKBOSE, and JKSSB."/>
-  <meta name="keywords" content="Kashmir University notifications, JKBOSE results, JKSSB recruitment, JK date sheet, Kashmir exam news"/>
-  <meta name="robots" content="index, follow"/>
-  <meta property="og:title" content="JKUpdates.in – Kashmir University | JKBOSE | JKSSB"/>
-  <meta property="og:description" content="Your one-stop source for all official notifications from Kashmir University, JKBOSE and JKSSB."/>
-  <meta property="og:type" content="website"/>
-  <title>JKUpdates.in – Kashmir University | JKBOSE | JKSSB</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-  <!--
-    ADSENSE: Replace XXXX with your publisher ID after approval:
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>JKUpdates.in – Live Updates</title>
+
+<meta name="description" content="Live updates from Kashmir University, JKBOSE, JKSSB">
+
 <style>
-:root{
-  --bg:#f0f4f8;--ink:#0d1b2a;--deep:#071221;
-  --red:#0ea5a0;--gold:#00c2b8;--gold-lt:#d0f5f4;
-  --muted:#4a6480;--line:#c5d5e4;--card:#ffffff;
-  --ku:#1a4a8a;--ku-bg:#ddeeff;
-  --bose:#0a6e5e;--bose-bg:#d4f4ef;
-  --ssb:#6b21a8;--ssb-bg:#ede9fe;
-  --res:#b45309;--res-bg:#fef3c7;
-  --adm:#0f5e8a;--adm-bg:#dbeafe;
+body{
+  font-family: system-ui;
+  max-width:720px;
+  margin:auto;
+  padding:20px;
+  background:#fff;
+  color:#111;
+  line-height:1.7;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Lora',Georgia,serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 
-.masthead{background:var(–deep);border-bottom:3px solid var(–gold);padding:0 1.5rem;}
-.mast-top{display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid #0e2a42;}
-.mast-meta{font-family:‘IBM Plex Mono’,monospace;font-size:.65rem;color:#777;letter-spacing:.04em;}
-.live{display:inline-flex;align-items:center;gap:5px;}
-.live-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;animation:pulse 1.8s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
-.mast-brand{text-align:center;padding:1.3rem 0 .9rem;}
-.brand-logo{font-family:‘Playfair Display’,serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:var(–bg);letter-spacing:-.02em;line-height:1;}
-.brand-logo em{color:var(–gold);font-style:normal;}
-.brand-sub{font-family:‘Lora’,serif;font-style:italic;font-size:.82rem;color:#999;margin-top:.3rem;letter-spacing:.02em;}
+header h1{margin:0;}
+.sub{color:#666;font-size:14px;}
 
-nav{background:var(–ink);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-nav::-webkit-scrollbar{display:none;}
-nav a{color:#bbb;text-decoration:none;font-family:‘IBM Plex Mono’,monospace;font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:.72rem 1rem;white-space:nowrap;border-bottom:2px solid transparent;cursor:pointer;transition:color .2s,border-color .2s;flex-shrink:0;}
-nav a:hover,nav a.active{color:var(–gold);border-bottom-color:var(–gold);}
+nav{
+  margin:20px 0;
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+}
+nav a{
+  cursor:pointer;
+  color:#555;
+  text-decoration:none;
+}
+nav a:hover{color:#000;}
 
-.ticker-wrap{background:#0a7a75;overflow:hidden;padding:.4rem 0;display:flex;align-items:center;}
-.ticker-label{background:#065e5a;color:#fff;font-family:‘IBM Plex Mono’,monospace;font-size:.62rem;letter-spacing:.1em;padding:0 .9rem;white-space:nowrap;flex-shrink:0;font-weight:500;}
-.ticker-scroll{overflow:hidden;flex:1;}
-.ticker-track{display:inline-flex;animation:scroll-ticker 55s linear infinite;white-space:nowrap;}
-.ticker-track span{color:#fff;font-size:.73rem;padding:0 2rem;cursor:pointer;}
-.ticker-track span::before{content:“◆  “;opacity:.5;}
-@keyframes scroll-ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.post{
+  border-bottom:1px solid #eee;
+  padding:15px 0;
+  cursor:pointer;
+}
+.post h2{margin:0;font-size:18px;}
+.post p{margin:5px 0;color:#555;font-size:14px;}
 
-.ad-leaderboard{background:var(–card);border-bottom:1px solid var(–line);text-align:center;padding:.7rem;}
-.ad-box{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8f0f8,#d8e8f4);border:1px dashed var(–line);font-family:‘IBM Plex Mono’,monospace;font-size:.6rem;color:var(–muted);letter-spacing:.05em;}
-.ad-leaderboard .ad-box{width:min(728px,100%);height:90px;}
-.ad-rect{width:100%;height:250px;}
+.article{display:none;}
+.back{cursor:pointer;color:#0077cc;margin-bottom:10px;}
 
-.container{max-width:1180px;margin:0 auto;padding:1.5rem;}
-.layout-grid{display:grid;grid-template-columns:1fr 300px;gap:2rem;align-items:start;}
-@media(max-width:860px){.layout-grid{grid-template-columns:1fr;}}
-
-.page{display:none;animation:fadeUp .3s ease;}
-.page.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-.breadcrumb{font-family:‘IBM Plex Mono’,monospace;font-size:.63rem;color:var(–muted);margin-bottom:1.2rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
-.breadcrumb a{color:var(–gold);cursor:pointer;text-decoration:none;}
-.breadcrumb a:hover{text-decoration:underline;}
-.breadcrumb span.sep{opacity:.5;}
-
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:2px solid var(–ink);}
-.sec-title{font-family:‘Playfair Display’,serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:.5rem;}
-.sec-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.refresh-btn{background:none;border:1px solid var(–line);color:var(–muted);font-family:‘IBM Plex Mono’,monospace;font-size:.62rem;padding:.28rem .6rem;cursor:pointer;letter-spacing:.05em;transition:all .2s;border-radius:2px;}
-.refresh-btn:hover{background:var(–ink);color:var(–bg);}
-.refresh-btn.spin .ico{display:inline-block;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-.filter-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.2rem;}
-.ftab{font-family:‘IBM Plex Mono’,monospace;font-size:.63rem;letter-spacing:.06em;padding:.35rem .85rem;border:1px solid transparent;cursor:pointer;transition:all .2s;border-radius:2px;opacity:.55;user-select:none;}
-.ftab.active,.ftab:hover{opacity:1;}
-.ftab[data-f=“all”]{background:var(–ink);color:var(–bg);border-color:var(–ink);opacity:1;}
-.ftab[data-f=“ku”]{background:var(–ku-bg);color:var(–ku);border-color:var(–ku);}
-.ftab[data-f=“bose”]{background:var(–bose-bg);color:var(–bose);border-color:var(–bose);}
-.ftab[data-f=“ssb”]{background:var(–ssb-bg);color:var(–ssb);border-color:var(–ssb);}
-.ftab[data-f=“results”]{background:var(–res-bg);color:var(–res);border-color:var(–res);}
-.ftab[data-f=“admit”]{background:var(–adm-bg);color:var(–adm);border-color:var(–adm);}
-
-.news-list{display:flex;flex-direction:column;gap:1px;}
-.ncard{background:var(–card);border:1px solid var(–line);border-left:3px solid transparent;padding:.9rem 1rem;cursor:pointer;transition:transform .15s,box-shadow .15s;animation:fadeUp .35s ease both;}
-.ncard:hover{transform:translateX(3px);box-shadow:0 2px 14px rgba(0,0,0,.08);}
-.ncard[data-src=“ku”]{border-left-color:var(–ku);}
-.ncard[data-src=“bose”]{border-left-color:var(–bose);}
-.ncard[data-src=“ssb”]{border-left-color:var(–ssb);}
-.ncard[data-src=“results”]{border-left-color:var(–res);}
-.ncard[data-src=“admit”]{border-left-color:var(–adm);}
-.ncard-meta{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.3rem;}
-.badge{font-family:‘IBM Plex Mono’,monospace;font-size:.57rem;font-weight:500;letter-spacing:.07em;padding:.12rem .4rem;border-radius:1px;text-transform:uppercase;}
-.badge-ku{background:var(–ku);color:#fff;}
-.badge-bose{background:var(–bose);color:#fff;}
-.badge-ssb{background:var(–ssb);color:#fff;}
-.badge-results{background:var(–res);color:#fff;}
-.badge-admit{background:var(–adm);color:#fff;}
-.ncard-date{font-family:‘IBM Plex Mono’,monospace;font-size:.6rem;color:var(–muted);}
-.ncard-new{font-family:‘IBM Plex Mono’,monospace;font-size:.55rem;color:var(–red);border:1px solid var(–red);padding:.08rem .3rem;border-radius:1px;animation:blink 1.5s step-end infinite;letter-spacing:.04em;}
-@keyframes blink{50%{opacity:0;}}
-.ncard-title{font-family:‘Lora’,serif;font-size:.9rem;font-weight:600;line-height:1.5;color:var(–ink);}
-.ncard-excerpt{font-size:.78rem;color:var(–muted);line-height:1.55;margin-top:.25rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.read-more{font-family:‘IBM Plex Mono’,monospace;font-size:.6rem;color:var(–gold);margin-top:.4rem;display:inline-block;}
-.ncard:hover .read-more{text-decoration:underline;}
-.hidden{display:none!important;}
-
-/* ARTICLE */
-.article-wrap{background:var(–card);border:1px solid var(–line);padding:2rem;}
-.article-hdr{margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:2px solid var(–line);}
-.article-title{font-family:‘Playfair Display’,serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:800;line-height:1.3;margin:.6rem 0 .8rem;}
-.article-byline{font-family:‘IBM Plex Mono’,monospace;font-size:.65rem;color:var(–muted);display:flex;gap:1rem;flex-wrap:wrap;}
-.article-body{font-size:.9rem;line-height:1.85;color:#1a2e42;}
-.article-body p{margin-bottom:1.1rem;}
-.article-body h3{font-family:‘Playfair Display’,serif;font-size:1.1rem;margin:1.5rem 0 .6rem;}
-.article-body ul,.article-body ol{margin:.5rem 0 1rem 1.5rem;}
-.article-body li{margin-bottom:.35rem;}
-.article-body .hl{background:var(–gold-lt);border-left:3px solid var(–gold);padding:.9rem 1rem;margin:1rem 0;font-size:.85rem;}
-.article-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.82rem;}
-.article-body table th{background:var(–ink);color:var(–bg);padding:.5rem .7rem;text-align:left;font-family:‘IBM Plex Mono’,monospace;font-size:.63rem;letter-spacing:.05em;}
-.article-body table td{padding:.5rem .7rem;border-bottom:1px solid var(–line);}
-.article-body table tr:nth-child(even) td{background:#f7f2e8;}
-.art-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(–line);}
-.tag{font-family:‘IBM Plex Mono’,monospace;font-size:.6rem;background:var(–bg);border:1px solid var(–line);padding:.2rem .55rem;color:var(–muted);border-radius:1px;cursor:pointer;}
-.tag:hover{border-color:var(–gold);color:var(–gold);}
-.art-source-note{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(–line);font-size:.78rem;color:var(–muted);}
-.art-source-note a{color:var(–red);text-decoration:none;}
-.art-source-note a:hover{text-decoration:underline;}
-
-/* CATEGORY HERO */
-.cat-hero{color:#fff;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
-.cat-hero::before{content:’’;position:absolute;top:-20px;right:-20px;width:200px;height:200px;border-radius:50%;border:40px solid rgba(255,255,255,.05);}
-.cat-hero h1{font-family:‘Playfair Display’,serif;font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;line-height:1.2;margin-bottom:.5rem;}
-.cat-hero p{font-size:.82rem;color:rgba(255,255,255,.75);max-width:520px;}
-.cat-count{font-family:‘IBM Plex Mono’,monospace;font-size:.65rem;color:rgba(255,255,255,.55);margin-top:.5rem;}
-
-/* SIDEBAR */
-.sidebar{display:flex;flex-direction:column;gap:1.4rem;}
-.widget{background:var(–card);border:1px solid var(–line);}
-.widget-hdr{background:var(–ink);padding:.55rem .9rem;font-family:‘Playfair Display’,serif;font-size:.82rem;font-weight:700;color:var(–bg);}
-.widget-body{padding:.85rem;}
-.qlinks{list-style:none;}
-.qlinks li{padding:.38rem 0;border-bottom:1px solid var(–line);font-size:.76rem;}
-.qlinks li:last-child{border-bottom:none;}
-.qlinks a{color:var(–ink);text-decoration:none;display:flex;justify-content:space-between;align-items:center;gap:.5rem;cursor:pointer;transition:color .15s;}
-.qlinks a:hover{color:var(–red);}
-.qlinks .arr{color:var(–gold);font-size:.65rem;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;}
-.stat-box{text-align:center;padding:.6rem .3rem;border:1px solid var(–line);}
-.stat-n{font-family:‘Playfair Display’,serif;font-size:1.3rem;font-weight:700;display:block;}
-.stat-l{font-family:‘IBM Plex Mono’,monospace;font-size:.57rem;color:var(–muted);letter-spacing:.04em;}
-
-.loading{text-align:center;padding:3rem 1rem;font-family:‘IBM Plex Mono’,monospace;font-size:.72rem;color:var(–muted);letter-spacing:.05em;}
-.loader{width:28px;height:28px;border:2px solid var(–line);border-top-color:var(–gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;}
-
-.disclaimer{background:#fffbf2;border:1px solid #e8ddb8;border-left:3px solid var(–gold);padding:.85rem 1rem;font-size:.73rem;color:var(–muted);line-height:1.65;margin-bottom:1.4rem;}
-.disclaimer strong{color:var(–ink);}
-
-/* PROSE PAGES */
-.prose{max-width:780px;}
-.prose h1{font-family:‘Playfair Display’,serif;font-size:2rem;font-weight:800;margin-bottom:1rem;}
-.prose h2{font-family:‘Playfair Display’,serif;font-size:1.3rem;font-weight:700;margin:1.8rem 0 .6rem;color:var(–ink);}
-.prose p{font-size:.87rem;line-height:1.85;margin-bottom:1rem;color:#1a2e42;}
-.prose a{color:var(–red);text-decoration:none;cursor:pointer;}
-.prose a:hover{text-decoration:underline;}
-.prose ul{margin:.5rem 0 1rem 1.5rem;}
-.prose ul li{font-size:.87rem;line-height:1.7;margin-bottom:.3rem;color:#1a2e42;}
-.contact-form{margin-top:1.5rem;display:flex;flex-direction:column;gap:.8rem;max-width:520px;}
-.contact-form label{font-family:‘IBM Plex Mono’,monospace;font-size:.65rem;color:var(–muted);letter-spacing:.05em;display:block;margin-bottom:.25rem;}
-.contact-form input,.contact-form textarea{width:100%;border:1px solid var(–line);background:var(–card);padding:.6rem .8rem;font-family:‘Lora’,serif;font-size:.85rem;color:var(–ink);outline:none;transition:border-color .2s;}
-.contact-form input:focus,.contact-form textarea:focus{border-color:var(–gold);}
-.contact-form textarea{resize:vertical;min-height:120px;}
-.contact-form button{background:var(–ink);color:var(–bg);border:none;font-family:‘IBM Plex Mono’,monospace;font-size:.7rem;letter-spacing:.07em;padding:.7rem 1.4rem;cursor:pointer;transition:background .2s;align-self:flex-start;}
-.contact-form button:hover{background:var(–gold);color:var(–ink);}
-.form-success{background:var(–bose-bg);border:1px solid var(–bose);color:var(–bose);padding:.8rem 1rem;font-size:.82rem;display:none;margin-bottom:1rem;}
-
-footer{background:var(–deep);color:#777;padding:2rem 1.5rem;margin-top:3rem;font-size:.73rem;}
-.foot-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:1.5rem;}
-.foot-col h4{font-family:‘Playfair Display’,serif;color:var(–bg);font-size:.88rem;margin-bottom:.7rem;}
-.foot-col p{line-height:1.75;}
-.foot-col a{color:#888;text-decoration:none;display:block;line-height:1.85;cursor:pointer;transition:color .15s;}
-.foot-col a:hover{color:var(–gold);}
-.foot-bottom{max-width:1180px;margin:0 auto;padding-top:1rem;border-top:1px solid #0e2a42;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;font-family:‘IBM Plex Mono’,monospace;font-size:.6rem;letter-spacing:.04em;}
-
-@media(max-width:600px){
-.masthead,.container{padding-left:1rem;padding-right:1rem;}
-nav a{padding:.6rem .7rem;font-size:.62rem;}
-.article-wrap{padding:1.2rem;}
+footer{
+  margin-top:40px;
+  font-size:12px;
+  color:#888;
 }
 </style>
-
 </head>
+
 <body>
 
-<header class="masthead">
-  <div class="mast-top">
-    <span class="mast-meta" id="dateStr"></span>
-    <span class="mast-meta live"><span class="live-dot"></span>LIVE UPDATES</span>
-    <span class="mast-meta">JAMMU &amp; KASHMIR</span>
-  </div>
-  <div class="mast-brand">
-    <div class="brand-logo">JK<em>Updates</em>.in</div>
-    <div class="brand-sub">Official Notifications · Results · Recruitment · Examinations</div>
-  </div>
+<header>
+  <h1>JKUpdates.in</h1>
+  <p class="sub">Live Notifications · KU · JKBOSE · JKSSB</p>
 </header>
 
-<nav id="mainNav">
-  <a data-page="home" class="active">Home</a>
-  <a data-page="ku">Kashmir University</a>
-  <a data-page="bose">JKBOSE</a>
-  <a data-page="ssb">JKSSB</a>
-  <a data-page="results">Results</a>
-  <a data-page="admit">Admit Cards</a>
-  <a data-page="about">About Us</a>
-  <a data-page="contact">Contact</a>
-  <a data-page="privacy">Privacy Policy</a>
+<nav>
+  <a onclick="filterPosts('all')">All</a>
+  <a onclick="filterPosts('ku')">KU</a>
+  <a onclick="filterPosts('bose')">JKBOSE</a>
+  <a onclick="filterPosts('ssb')">JKSSB</a>
 </nav>
 
-<div class="ticker-wrap">
-  <div class="ticker-label">BREAKING</div>
-  <div class="ticker-scroll"><div class="ticker-track" id="tickerTrack"></div></div>
-</div>
-
-<div class="ad-leaderboard">
-  <div class="ad-box">[ Advertisement – 728×90 · Replace with AdSense code after approval ]</div>
-</div>
-
-<div class="container">
-
-  <!-- HOME -->
-
-  <div class="page active" id="page-home">
-    <div class="layout-grid">
-      <main>
-        <div class="disclaimer"><strong>Disclaimer:</strong> JKUpdates.in is an independent news aggregator. We display publicly available notifications from <strong>Kashmir University</strong>, <strong>JKBOSE</strong>, and <strong>JKSSB</strong>. We are not affiliated with or endorsed by these bodies. Always verify from official websites before taking action.</div>
-        <div class="filter-tabs" id="homeTabs">
-          <div class="ftab active" data-f="all">ALL UPDATES</div>
-          <div class="ftab" data-f="ku">KASHMIR UNI</div>
-          <div class="ftab" data-f="bose">JKBOSE</div>
-          <div class="ftab" data-f="ssb">JKSSB</div>
-          <div class="ftab" data-f="results">RESULTS</div>
-          <div class="ftab" data-f="admit">ADMIT CARDS</div>
-        </div>
-        <div class="sec-hdr">
-          <span class="sec-title"><span class="sec-dot" style="background:var(--red)"></span>Latest Notifications</span>
-          <button class="refresh-btn" id="refreshBtn" onclick="loadFeed()"><span class="ico">&#8635;</span> REFRESH</button>
-        </div>
-        <div id="homeFeed" class="news-list"><div class="loading"><div class="loader"></div>Fetching updates&hellip;</div></div>
-      </main>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget">
-          <div class="widget-hdr">Today at a Glance</div>
-          <div class="widget-body">
-            <div class="stats-grid">
-              <div class="stat-box"><span class="stat-n" id="s-ku">–</span><span class="stat-l">KU</span></div>
-              <div class="stat-box"><span class="stat-n" id="s-bose">–</span><span class="stat-l">BOSE</span></div>
-              <div class="stat-box"><span class="stat-n" id="s-ssb">–</span><span class="stat-l">JKSSB</span></div>
-              <div class="stat-box"><span class="stat-n" id="s-total">–</span><span class="stat-l">TOTAL</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="widget">
-          <div class="widget-hdr">Official Portals</div>
-          <div class="widget-body">
-            <ul class="qlinks">
-              <li><a href="https://kashmiruniversity.net" target="_blank" rel="noopener noreferrer">Kashmir University <span class="arr">&#8599;</span></a></li>
-              <li><a href="https://jkbose.nic.in" target="_blank" rel="noopener noreferrer">JKBOSE Official <span class="arr">&#8599;</span></a></li>
-              <li><a href="https://jkssb.nic.in" target="_blank" rel="noopener noreferrer">JKSSB Official <span class="arr">&#8599;</span></a></li>
-              <li><a href="https://jkresults.nic.in" target="_blank" rel="noopener noreferrer">JK Results Portal <span class="arr">&#8599;</span></a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="widget">
-          <div class="widget-hdr">Browse by Category</div>
-          <div class="widget-body">
-            <ul class="qlinks">
-              <li><a onclick="navigate('ku')">Kashmir University Notices <span class="arr">&#8594;</span></a></li>
-              <li><a onclick="navigate('bose')">JKBOSE Notifications <span class="arr">&#8594;</span></a></li>
-              <li><a onclick="navigate('ssb')">JKSSB Recruitment <span class="arr">&#8594;</span></a></li>
-              <li><a onclick="navigate('results')">All Results <span class="arr">&#8594;</span></a></li>
-              <li><a onclick="navigate('admit')">Admit Cards <span class="arr">&#8594;</span></a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- KASHMIR UNIVERSITY -->
-
-  <div class="page" id="page-ku">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>Kashmir University</div>
-    <div class="cat-hero" style="background:var(--ku)">
-      <h1>Kashmir University</h1>
-      <p>Official notifications, date sheets, results, examination schedules and academic news from the University of Kashmir, Hazratbal Srinagar.</p>
-      <div class="cat-count" id="ku-count"></div>
-    </div>
-    <div class="layout-grid">
-      <div>
-        <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--ku)"></span>All KU Notifications</span></div>
-        <div id="kuFeed" class="news-list"><div class="loading"><div class="loader"></div>Loading&hellip;</div></div>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">KU Quick Links</div><div class="widget-body"><ul class="qlinks">
-          <li><a href="https://kashmiruniversity.net" target="_blank" rel="noopener noreferrer">KU Official Site <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://kashmiruniversity.net/datesheet.php" target="_blank" rel="noopener noreferrer">Date Sheets <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://kashmiruniversity.net/result.php" target="_blank" rel="noopener noreferrer">Results <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://kashmiruniversity.net/notices.php" target="_blank" rel="noopener noreferrer">Notifications <span class="arr">&#8599;</span></a></li>
-        </ul></div></div>
-        <div class="widget"><div class="widget-hdr">Other Sources</div><div class="widget-body"><ul class="qlinks">
-          <li><a onclick="navigate('bose')">JKBOSE Updates <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('ssb')">JKSSB Recruitment <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('results')">All Results <span class="arr">&#8594;</span></a></li>
-        </ul></div></div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- JKBOSE -->
-
-  <div class="page" id="page-bose">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>JKBOSE</div>
-    <div class="cat-hero" style="background:var(--bose)">
-      <h1>JKBOSE</h1>
-      <p>Notifications, results, date sheets and examination schedules from the J&amp;K Board of School Education.</p>
-      <div class="cat-count" id="bose-count"></div>
-    </div>
-    <div class="layout-grid">
-      <div>
-        <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--bose)"></span>All JKBOSE Notifications</span></div>
-        <div id="boseFeed" class="news-list"><div class="loading"><div class="loader"></div>Loading&hellip;</div></div>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">JKBOSE Quick Links</div><div class="widget-body"><ul class="qlinks">
-          <li><a href="https://jkbose.nic.in" target="_blank" rel="noopener noreferrer">JKBOSE Official <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://jkresults.nic.in" target="_blank" rel="noopener noreferrer">JK Results Portal <span class="arr">&#8599;</span></a></li>
-        </ul></div></div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- JKSSB -->
-
-  <div class="page" id="page-ssb">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>JKSSB</div>
-    <div class="cat-hero" style="background:var(--ssb)">
-      <h1>JKSSB</h1>
-      <p>Recruitment notifications, admit cards, answer keys, interview schedules and results from J&amp;K Services Selection Board.</p>
-      <div class="cat-count" id="ssb-count"></div>
-    </div>
-    <div class="layout-grid">
-      <div>
-        <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--ssb)"></span>All JKSSB Notifications</span></div>
-        <div id="ssbFeed" class="news-list"><div class="loading"><div class="loader"></div>Loading&hellip;</div></div>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">JKSSB Quick Links</div><div class="widget-body"><ul class="qlinks">
-          <li><a href="https://jkssb.nic.in" target="_blank" rel="noopener noreferrer">JKSSB Official <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://jkssb.nic.in/recruitment" target="_blank" rel="noopener noreferrer">Current Recruitments <span class="arr">&#8599;</span></a></li>
-        </ul></div></div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- RESULTS -->
-
-  <div class="page" id="page-results">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>Results</div>
-    <div class="cat-hero" style="background:var(--res)">
-      <h1>Examination Results</h1>
-      <p>Latest declared results from Kashmir University, JKBOSE, and JKSSB examinations.</p>
-      <div class="cat-count" id="res-count"></div>
-    </div>
-    <div class="layout-grid">
-      <div>
-        <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--res)"></span>All Results</span></div>
-        <div id="resultsFeed" class="news-list"><div class="loading"><div class="loader"></div>Loading&hellip;</div></div>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">Results Portals</div><div class="widget-body"><ul class="qlinks">
-          <li><a href="https://jkresults.nic.in" target="_blank" rel="noopener noreferrer">JK Results Portal <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://kashmiruniversity.net/result.php" target="_blank" rel="noopener noreferrer">KU Results <span class="arr">&#8599;</span></a></li>
-          <li><a href="https://jkbose.nic.in" target="_blank" rel="noopener noreferrer">JKBOSE Results <span class="arr">&#8599;</span></a></li>
-        </ul></div></div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- ADMIT CARDS -->
-
-  <div class="page" id="page-admit">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>Admit Cards</div>
-    <div class="cat-hero" style="background:var(--adm)">
-      <h1>Admit Cards</h1>
-      <p>Download hall tickets and admit cards for Kashmir University, JKBOSE, and JKSSB examinations.</p>
-      <div class="cat-count" id="adm-count"></div>
-    </div>
-    <div class="layout-grid">
-      <div>
-        <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--adm)"></span>All Admit Cards</span></div>
-        <div id="admitFeed" class="news-list"><div class="loading"><div class="loader"></div>Loading&hellip;</div></div>
-      </div>
-      <aside class="sidebar"><div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div></aside>
-    </div>
-  </div>
-
-  <!-- ARTICLE DETAIL -->
-
-  <div class="page" id="page-article">
-    <div class="layout-grid">
-      <main>
-        <div class="breadcrumb" id="artBreadcrumb"></div>
-        <div class="article-wrap" id="articleContent"></div>
-        <div style="margin-top:2rem;">
-          <div class="sec-hdr"><span class="sec-title"><span class="sec-dot" style="background:var(--gold)"></span>Related Notifications</span></div>
-          <div id="relatedFeed" class="news-list"></div>
-        </div>
-      </main>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">Categories</div><div class="widget-body"><ul class="qlinks">
-          <li><a onclick="navigate('ku')">Kashmir University <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('bose')">JKBOSE <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('ssb')">JKSSB <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('results')">Results <span class="arr">&#8594;</span></a></li>
-          <li><a onclick="navigate('admit')">Admit Cards <span class="arr">&#8594;</span></a></li>
-        </ul></div></div>
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- ABOUT -->
-
-  <div class="page" id="page-about">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>About Us</div>
-    <div class="layout-grid">
-      <div class="prose">
-        <h1>About JKUpdates.in</h1>
-        <p>JKUpdates.in is an independent, student-focused news aggregator dedicated to Jammu &amp; Kashmir's educational and public service landscape. We bring together official notifications from three key bodies:</p>
-        <ul>
-          <li><strong>Kashmir University</strong> – date sheets, results, exam schedules, Ph.D. admissions, and academic notices.</li>
-          <li><strong>JKBOSE</strong> – Class 10 &amp; 12 results, date sheets, improvement exam notices, and migration certificates.</li>
-          <li><strong>JKSSB</strong> – recruitment advertisements, admit cards, answer keys, interview schedules, and selection lists.</li>
-        </ul>
-        <h2>Our Mission</h2>
-        <p>Students and aspirants in Jammu &amp; Kashmir often miss critical deadlines because notifications are scattered across multiple official portals. JKUpdates.in solves this by surfacing all important announcements in one clean, fast-loading feed — updated automatically every 10 minutes.</p>
-        <h2>What We Are Not</h2>
-        <p>We are <strong>not</strong> affiliated with, endorsed by, or connected to Kashmir University, JKBOSE, JKSSB, or any government body. Always verify critical information directly on official websites.</p>
-        <h2>Security &amp; SSL Certificate</h2>
-        <p>JKUpdates.in is served exclusively over <strong>HTTPS</strong> using a valid SSL/TLS certificate, ensuring all data between your browser and our server is encrypted. You will see the padlock icon 🔒 in your browser's address bar confirming the secure connection.</p>
-        <p><strong>How to set up SSL for your own deployment of this site:</strong></p>
-        <ul>
-          <li><strong>Free (recommended) – Let's Encrypt via Certbot:</strong> If you host on a VPS (Ubuntu/Debian), run <code style="background:var(--gold-lt);padding:.1rem .35rem;border-radius:2px;font-size:.82rem;">sudo certbot --nginx -d yourdomain.com</code>. Certbot auto-renews every 90 days.</li>
-          <li><strong>Cloudflare (easiest):</strong> Point your domain's nameservers to Cloudflare. Enable "Full (strict)" SSL under SSL/TLS settings — free, instant, and includes DDoS protection.</li>
-          <li><strong>Netlify / Vercel / GitHub Pages:</strong> SSL is provisioned automatically at no cost when you deploy your site. Just connect your custom domain in the dashboard.</li>
-          <li><strong>cPanel hosting:</strong> Most shared hosts (Hostinger, SiteGround, etc.) include a free AutoSSL / Let's Encrypt certificate. Enable it from cPanel → SSL/TLS → Install/Manage SSL.</li>
-        </ul>
-        <p>Google AdSense <strong>requires</strong> your site to be HTTPS before your application will be approved. Always ensure your SSL certificate is valid and not expired before submitting for AdSense review.</p>
-        <h2>Contact</h2>
-        <p>For corrections, feedback, or partnership enquiries, visit our <a onclick="navigate('contact')">Contact page</a> or email <strong>contact@jkupdates.in</strong>.</p>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget">
-          <div class="widget-hdr">🔒 SSL / HTTPS Status</div>
-          <div class="widget-body" style="font-size:.8rem;line-height:1.9;">
-            <p style="margin:0;color:#0a6e5e;font-weight:600;">✅ This site is SSL Secured</p>
-            <p style="margin:.5rem 0 0;color:var(--muted);">All connections are encrypted via HTTPS / TLS 1.3. Your data is safe.</p>
-            <hr style="border:none;border-top:1px solid var(--line);margin:.75rem 0"/>
-            <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.04em;">HOW TO GET SSL FREE:</p>
-            <ul style="margin:.4rem 0 0 1rem;color:var(--muted);">
-              <li>Let's Encrypt + Certbot</li>
-              <li>Cloudflare Free Plan</li>
-              <li>Netlify / Vercel Auto-SSL</li>
-              <li>cPanel AutoSSL</li>
-            </ul>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- CONTACT -->
-
-  <div class="page" id="page-contact">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>Contact</div>
-    <div class="layout-grid">
-      <div class="prose">
-        <h1>Contact Us</h1>
-        <p>Have a correction to report, a notification we missed, or a partnership enquiry? Fill in the form below or email us at <strong>contact@jkupdates.in</strong>.</p>
-        <div class="form-success" id="formSuccess">&#10003; Your message has been sent. We'll get back to you within 24 hours.</div>
-        <div class="contact-form">
-          <div><label>YOUR NAME</label><input type="text" id="cName" placeholder="e.g. Mohammad Ashraf"/></div>
-          <div><label>EMAIL ADDRESS</label><input type="email" id="cEmail" placeholder="you@example.com"/></div>
-          <div><label>SUBJECT</label><input type="text" id="cSubject" placeholder="e.g. Missing notification – JKBOSE"/></div>
-          <div><label>MESSAGE</label><textarea id="cMessage" placeholder="Describe your query or correction…"></textarea></div>
-          <button onclick="submitContact()">SEND MESSAGE</button>
-        </div>
-      </div>
-      <aside class="sidebar">
-        <div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div>
-        <div class="widget"><div class="widget-hdr">Other Ways to Reach Us</div><div class="widget-body" style="font-size:.8rem;line-height:1.8;">
-          <p style="margin:0"><strong>Email:</strong> contact@jkupdates.in</p>
-          <p style="margin:.4rem 0 0"><strong>Response time:</strong> Within 24 hours</p>
-        </div></div>
-      </aside>
-    </div>
-  </div>
-
-  <!-- PRIVACY -->
-
-  <div class="page" id="page-privacy">
-    <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span class="sep">/</span>Privacy Policy</div>
-    <div class="layout-grid">
-      <div class="prose">
-        <h1>Privacy Policy</h1>
-        <p><em>Last updated: <span id="privDate"></span></em></p>
-        <p>This Privacy Policy describes how JKUpdates.in collects, uses, and shares information when you use our website.</p>
-        <h2>Information We Collect</h2>
-        <p>JKUpdates.in does not require registration. We may collect non-personal data such as browser type, OS, referring URL, and pages visited through standard analytics.</p>
-        <h2>Cookies</h2>
-        <p>We use cookies to improve functionality and to serve advertisements through Google AdSense. Google may use the DART cookie to serve ads based on your prior visits. You may opt out at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">aboutads.info</a>.</p>
-        <h2>Google AdSense</h2>
-        <p>We participate in Google AdSense. Google, as a third-party vendor, uses cookies to serve ads on our site. Users may opt out of the DART cookie by visiting the <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.</p>
-        <h2>Third-Party Links</h2>
-        <p>Our site links to official government and educational portals. We are not responsible for their privacy practices.</p>
-        <h2>Children's Privacy</h2>
-        <p>Our website is not directed at children under 13. We do not knowingly collect personal information from children.</p>
-        <h2>Changes</h2>
-        <p>We reserve the right to update this policy. Changes will be posted on this page with an updated date.</p>
-        <h2>Contact</h2>
-        <p>Questions? <a onclick="navigate('contact')">Contact us</a> or email privacy@jkupdates.in.</p>
-      </div>
-      <aside class="sidebar"><div class="ad-box ad-rect">[ Advertisement – 300×250 ]</div></aside>
-    </div>
-  </div>
-
-</div><!-- /container -->
+<div id="list">Loading updates...</div>
+<div id="article" class="article"></div>
 
 <footer>
-  <div class="foot-inner">
-    <div class="foot-col">
-      <h4>JKUpdates.in</h4>
-      <p>Independent aggregator of official notifications from Kashmir University, JKBOSE, and JKSSB.</p>
-    </div>
-    <div class="foot-col">
-      <h4>Pages</h4>
-      <a onclick="navigate('home')">Home</a>
-      <a onclick="navigate('about')">About Us</a>
-      <a onclick="navigate('contact')">Contact</a>
-      <a onclick="navigate('privacy')">Privacy Policy</a>
-    </div>
-    <div class="foot-col">
-      <h4>Categories</h4>
-      <a onclick="navigate('ku')">Kashmir University</a>
-      <a onclick="navigate('bose')">JKBOSE</a>
-      <a onclick="navigate('ssb')">JKSSB</a>
-      <a onclick="navigate('results')">Results</a>
-      <a onclick="navigate('admit')">Admit Cards</a>
-    </div>
-    <div class="foot-col">
-      <h4>&#128274; SSL Secured</h4>
-      <p>This site is served over HTTPS with a valid SSL/TLS certificate. All connections are encrypted. Look for the padlock in your browser's address bar.</p>
-      <p style="margin-top:.5rem;font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.04em;color:#0ea5a0;">TLS 1.3 · HTTPS ONLY</p>
-    </div>
-    <div class="foot-col">
-      <h4>Official Sites</h4>
-      <a href="https://kashmiruniversity.net" target="_blank" rel="noopener noreferrer">Kashmir University &#8599;</a>
-      <a href="https://jkbose.nic.in" target="_blank" rel="noopener noreferrer">JKBOSE &#8599;</a>
-      <a href="https://jkssb.nic.in" target="_blank" rel="noopener noreferrer">JKSSB &#8599;</a>
-      <a href="https://jkresults.nic.in" target="_blank" rel="noopener noreferrer">JK Results &#8599;</a>
-    </div>
-  </div>
-  <div class="foot-bottom">
-    <span>&#169; 2025 JKUpdates.in &middot; Independent News Aggregator &middot; Not affiliated with any government body</span>
-    <span>Made for Students of J&amp;K</span>
-  </div>
+  © 2026 JKUpdates.in
 </footer>
 
 <script>
-// ═══ DATA ═══════════════════════════════════════════════════
-const DB = [
+let DB = [];
+let currentFilter = 'all';
+
+// 🔥 RSS FEEDS (via rss2json API)
+const feeds = [
   {
-    id:"ku-001",src:"ku",cat:["ku"],isNew:true,date:"2026-04-14",
-    title:"Date Sheet for Annual Examination 2025 – B.A/B.Sc/B.Com (General) Semester VI",
-    excerpt:"The Controller of Examinations notifies all concerned that the date sheet for Annual Examinations 2025 (Semester VI) stands released for B.A, B.Sc, and B.Com General courses.",
-    tags:["Date Sheet","Kashmir University","B.A","B.Sc","B.Com","Semester VI"],
-    officialUrl:"https://kashmiruniversity.net",
-    body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, Hazratbal Srinagar, notifies all students, colleges, and examination centres that the <strong>Date Sheet for Annual Examination 2025</strong> for B.A / B.Sc / B.Com (General) Semester VI has been released.</p>
-<div class="hl">📅 Examinations commence: <strong>1st May 2025</strong>. Download the complete date sheet from the official portal.</div>
-<h3>Key Instructions for Students</h3>
-<ul>
-<li>Carry your University Admit Card to the examination centre every day.</li>
-<li>Report at least 30 minutes before the scheduled start time.</li>
-<li>Mobile phones and electronic devices are strictly prohibited.</li>
-<li>Write all required details on the answer booklet in blue or black ink.</li>
-</ul>
-<h3>Examination Schedule Overview</h3>
-<table>
-<tr><th>Course</th><th>Start Date</th><th>Timing</th></tr>
-<tr><td>B.A (General) Sem VI</td><td>01 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
-<tr><td>B.Sc (General) Sem VI</td><td>02 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
-<tr><td>B.Com (General) Sem VI</td><td>03 May 2025</td><td>10:00 AM – 1:00 PM</td></tr>
-</table>
-<p>For the complete subject-wise date sheet, visit the official University of Kashmir website. Affiliated colleges should display the date sheet on their notice boards immediately.</p>`
+    url: "https://api.rss2json.com/v1/api.json?rss_url=https://kashmiruniversity.net/notifications.xml",
+    cat: "ku"
   },
   {
-    id:"ku-002",src:"ku",cat:["ku"],isNew:false,date:"2026-04-12",
-    title:"Notice: Submission of Examination Forms – Regular & Ex-Students (Semester V)",
-    excerpt:"Students who have not submitted examination forms for Semester V courses are advised to complete registration before the deadline to avoid late fee charges.",
-    tags:["Examination Forms","Kashmir University","Semester V","Deadline"],
-    officialUrl:"https://kashmiruniversity.net",
-    body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, notifies all Regular and Ex-Students registered in Semester V programmes that the last date for submission of Examination Forms is approaching.</p>
-<div class="hl">⚠️ <strong>Last Date (no late fee):</strong> 30 April 2025 &nbsp;|&nbsp; <strong>With late fee (₹500):</strong> 10 May 2025</div>
-<h3>How to Submit Examination Forms</h3>
-<ul>
-<li>Log in to the student portal at <strong>kashmiruniversity.net</strong>.</li>
-<li>Navigate to "Examination Form Submission" under your dashboard.</li>
-<li>Verify your registered subjects and fee payment status.</li>
-<li>Complete payment via Net Banking / UPI / Debit Card.</li>
-<li>Download and retain the acknowledgement receipt.</li>
-</ul>
-<p>Students facing technical issues should contact their college examination coordinator or the University IT helpdesk immediately.</p>`
-  },
-  {
-    id:"ku-003",src:"ku",cat:["ku"],isNew:false,date:"2026-04-10",
-    title:"Ph.D. Entrance Test 2025 – Schedule and Syllabus Announced",
-    excerpt:"The University has released the schedule and subject-wise syllabus for the Ph.D. Entrance Test 2025. Eligible candidates must register online before the deadline.",
-    tags:["Ph.D.","Entrance Test","Kashmir University","Research","2025"],
-    officialUrl:"https://kashmiruniversity.net",
-    body:`<p>The <strong>University of Kashmir</strong> announces the schedule for the <strong>Ph.D. Entrance Test 2025</strong> for admission to doctoral programmes across all Departments and Schools.</p>
-<h3>Important Dates</h3>
-<table>
-<tr><th>Event</th><th>Date</th></tr>
-<tr><td>Online Registration Opens</td><td>15 April 2025</td></tr>
-<tr><td>Last Date for Registration</td><td>5 May 2025</td></tr>
-<tr><td>Admit Card Download</td><td>15 May 2025</td></tr>
-<tr><td>Ph.D. Entrance Test</td><td>25 May 2025</td></tr>
-</table>
-<h3>Eligibility</h3>
-<ul>
-<li>Master's degree with at least 55% marks (50% for SC/ST/PwD candidates).</li>
-<li>Candidates who have qualified UGC-NET/JRF, SLET, or equivalent are exempted from the entrance test.</li>
-</ul>
-<p>The subject-wise syllabus is available on the official University portal. Candidates should download and study it carefully before the test.</p>`
-  },
-  {
-    id:"ku-004",src:"ku",cat:["ku","results"],isNew:false,date:"2026-04-05",
-    title:"Results Declared: B.Ed Semester IV Annual Examination 2024",
-    excerpt:"Students who appeared in B.Ed Semester IV Annual Examination 2024 can check their results on the official KU results portal now.",
-    tags:["Results","B.Ed","Kashmir University","Semester IV","2024"],
-    officialUrl:"https://jkresults.nic.in",
-    body:`<p>The <strong>Controller of Examinations, University of Kashmir</strong>, notifies that the results of the <strong>B.Ed Semester IV Annual Examination 2024</strong> have been declared and are now available on the official results portal.</p>
-<div class="hl">✅ Results are LIVE. Check at <strong>jkresults.nic.in</strong> or on the University portal.</div>
-<h3>How to Check Your Result</h3>
-<ul>
-<li>Visit <strong>kashmiruniversity.net</strong> and click on "Results".</li>
-<li>Alternatively visit <strong>jkresults.nic.in</strong>.</li>
-<li>Enter your Roll Number and Registration Number.</li>
-<li>View and download your result for future reference.</li>
-</ul>
-<p>Students who are not satisfied with their result may apply for re-evaluation within 30 days of declaration as per University rules. Re-evaluation fees and procedure details are available on the official portal.</p>`
-  },
-  {
-    id:"bose-001",src:"bose",cat:["bose","results"],isNew:true,date:"2026-04-14",
-    title:"JKBOSE Class 10 Annual Regular 2025 – Result Declared",
-    excerpt:"JKBOSE has declared the Class 10th Annual Regular Examination 2025 result for both Jammu and Kashmir Divisions. Students can check their results immediately.",
-    tags:["Results","JKBOSE","Class 10","2025","Annual Regular"],
-    officialUrl:"https://jkbose.nic.in",
-    body:`<p>The <strong>Jammu and Kashmir Board of School Education (JKBOSE)</strong> has officially declared the result of the <strong>Class 10th Annual Regular Examination 2025</strong> for both Jammu and Kashmir Divisions.</p>
-<div class="hl">🎉 Results are DECLARED! Check now at <strong>jkbose.nic.in</strong> or <strong>jkresults.nic.in</strong></div>
-<h3>Overall Pass Percentage</h3>
-<table>
-<tr><th>Division</th><th>Appeared</th><th>Passed</th><th>Pass %</th></tr>
-<tr><td>Kashmir Division</td><td>1,02,450</td><td>81,960</td><td>80.0%</td></tr>
-<tr><td>Jammu Division</td><td>98,320</td><td>76,690</td><td>78.0%</td></tr>
-</table>
-<h3>Steps to Check Your Result</h3>
-<ul>
-<li>Go to <strong>jkbose.nic.in</strong> or <strong>jkresults.nic.in</strong>.</li>
-<li>Click on "Class 10 Annual Regular 2025 Result".</li>
-<li>Enter your Roll Number.</li>
-<li>View and download your Marks Certificate.</li>
-</ul>
-<p>Students who wish to apply for re-evaluation or rechecking may do so within the prescribed time limit. The Board will announce the re-evaluation schedule shortly.</p>`
-  },
-  {
-    id:"bose-002",src:"bose",cat:["bose"],isNew:true,date:"2026-04-13",
-    title:"Date Sheet: Class 11 Annual Regular Examination – Kashmir Division 2025",
-    excerpt:"JKBOSE has released the date sheet for Class 11 Annual Regular Examination 2025 for Kashmir Division. Examinations commence from 5th May 2025.",
-    tags:["Date Sheet","JKBOSE","Class 11","Kashmir Division","2025"],
-    officialUrl:"https://jkbose.nic.in",
-    body:`<p>The <strong>Jammu &amp; Kashmir Board of School Education (JKBOSE)</strong> has released the <strong>Date Sheet for Class 11 Annual Regular Examination 2025 – Kashmir Division</strong>.</p>
-<div class="hl">📅 Examinations begin: <strong>5th May 2025</strong> | Timing: <strong>10:00 AM – 1:00 PM</strong></div>
-<h3>General Instructions</h3>
-<ul>
-<li>Carry your Admit Card / Hall Ticket to the examination centre every day.</li>
-<li>Be present at least 15 minutes before the scheduled start time.</li>
-<li>Use of unfair means will result in cancellation of the entire examination.</li>
-<li>School authorities must display the date sheet on school notice boards immediately.</li>
-</ul>
-<p>The complete subject-wise date sheet is available on the official JKBOSE website. Students are advised to download and keep a copy.</p>`
-  },
-  {
-    id:"bose-003",src:"bose",cat:["bose","admit"],isNew:false,date:"2026-04-09",
-    title:"Admit Cards Released – Class 12 Annual Regular Examination 2025",
-    excerpt:"JKBOSE has released Admit Cards for Class 12 Annual Regular Examination 2025. Students can download their hall tickets from the official portal.",
-    tags:["Admit Card","JKBOSE","Class 12","2025","Hall Ticket"],
-    officialUrl:"https://jkbose.nic.in",
-    body:`<p>The <strong>J&amp;K Board of School Education (JKBOSE)</strong> has made available the <strong>Admit Cards (Hall Tickets) for Class 12 Annual Regular Examination 2025</strong>.</p>
-<div class="hl">🎫 Admit Cards are AVAILABLE. Download now from <strong>jkbose.nic.in</strong></div>
-<h3>How to Download Admit Card</h3>
-<ul>
-<li>Visit <strong>jkbose.nic.in</strong>.</li>
-<li>Click on "Download Admit Card" under the Examination tab.</li>
-<li>Enter your Registration Number and Date of Birth.</li>
-<li>Download and take a colour printout.</li>
-</ul>
-<p>Check all details on the Admit Card carefully. In case of any discrepancy, contact the Board office or your school principal immediately. Students without a valid Admit Card will NOT be allowed in the examination hall.</p>`
-  },
-  {
-    id:"ssb-001",src:"ssb",cat:["ssb"],isNew:true,date:"2026-04-14",
-    title:"JKSSB Recruitment 2025 – Advertisement for 1,200 Posts Across Departments",
-    excerpt:"The J&K Services Selection Board has released a mega recruitment advertisement for 1,200 posts across various government departments. Online applications are open.",
-    tags:["Recruitment","JKSSB","Jobs","2025","Government Jobs","J&K"],
-    officialUrl:"https://jkssb.nic.in",
-    body:`<p>The <strong>Jammu and Kashmir Services Selection Board (JKSSB)</strong> has issued a <strong>Recruitment Advertisement for 1,200 Posts</strong> across various Government Departments of the Union Territory of Jammu &amp; Kashmir.</p>
-<div class="hl">🔔 Applications Open! Last Date: <strong>30 April 2025</strong> | Apply at <strong>jkssb.nic.in</strong></div>
-<h3>Posts Available</h3>
-<table>
-<tr><th>Post Name</th><th>Department</th><th>Posts</th><th>Qualification</th></tr>
-<tr><td>Junior Assistant</td><td>Finance</td><td>350</td><td>12th Pass + Computer Knowledge</td></tr>
-<tr><td>Sub-Inspector</td><td>Various</td><td>200</td><td>Graduation</td></tr>
-<tr><td>Panchayat Inspector</td><td>Rural Development</td><td>150</td><td>Graduation</td></tr>
-<tr><td>Accountant</td><td>Finance</td><td>100</td><td>B.Com / CA Inter</td></tr>
-<tr><td>Other Posts</td><td>Various</td><td>400</td><td>As per notification</td></tr>
-</table>
-<h3>Important Dates</h3>
-<table>
-<tr><th>Event</th><th>Date</th></tr>
-<tr><td>Notification Release</td><td>14 April 2025</td></tr>
-<tr><td>Online Application Opens</td><td>16 April 2025</td></tr>
-<tr><td>Last Date to Apply</td><td>30 April 2025</td></tr>
-<tr><td>Written Test (tentative)</td><td>June 2025</td></tr>
-</table>
-<h3>How to Apply</h3>
-<ul>
-<li>Visit <strong>jkssb.nic.in</strong> and click "Apply Online" under Recruitment.</li>
-<li>Register with your valid email address and mobile number.</li>
-<li>Fill the application form and upload required documents.</li>
-<li>Pay the application fee online (General: ₹500 | SC/ST/PwD: ₹250).</li>
-<li>Submit and download your confirmation receipt.</li>
-</ul>`
-  },
-  {
-    id:"ssb-002",src:"ssb",cat:["ssb","admit"],isNew:true,date:"2026-04-13",
-    title:"Admit Card Download – Written Test for Junior Assistant Posts",
-    excerpt:"Candidates who applied for Junior Assistant (Finance) posts can now download their Admit Cards from the official JKSSB portal.",
-    tags:["Admit Card","JKSSB","Junior Assistant","Written Test","Finance"],
-    officialUrl:"https://jkssb.nic.in",
-    body:`<p>The <strong>Jammu and Kashmir Services Selection Board (JKSSB)</strong> has released <strong>Admit Cards for the Written Test</strong> for the post of <strong>Junior Assistant (Finance Department)</strong>.</p>
-<div class="hl">🎫 Admit Cards LIVE! Written Test Date: <strong>20 April 2025</strong></div>
-<h3>How to Download JKSSB Admit Card</h3>
-<ul>
-<li>Visit <strong>jkssb.nic.in</strong>.</li>
-<li>Click on "Admit Card" in the Recruitment section.</li>
-<li>Select "Junior Assistant (Finance) Written Test 2025".</li>
-<li>Enter your Application Number and Date of Birth.</li>
-<li>Download and print the Admit Card in colour.</li>
-</ul>
-<h3>Exam Day Instructions</h3>
-<ul>
-<li>Carry the printed Admit Card along with a valid Government-issued Photo ID (Aadhaar, Voter ID, Passport).</li>
-<li>Report to the examination centre at least 45 minutes before start time.</li>
-<li>Electronic gadgets, calculators, and mobile phones are strictly prohibited.</li>
-</ul>`
-  },
-  {
-    id:"ssb-003",src:"ssb",cat:["ssb","results"],isNew:false,date:"2026-04-08",
-    title:"Final Answer Key Released – Panchayat Inspector Written Examination",
-    excerpt:"The final answer key for the Panchayat Inspector Written Examination has been published after considering all objections raised by candidates.",
-    tags:["Answer Key","JKSSB","Panchayat Inspector","Rural Development"],
-    officialUrl:"https://jkssb.nic.in",
-    body:`<p>The <strong>Jammu &amp; Kashmir Services Selection Board (JKSSB)</strong> has published the <strong>Final Answer Key</strong> for the Written Examination for the post of <strong>Panchayat Inspector (Rural Development Department)</strong>.</p>
-<p>The final answer key has been prepared after due consideration of all objections received from candidates during the objection window. Decisions taken by the Board's expert committee are final and binding.</p>
-<div class="hl">📋 Results based on the final answer key will be declared within 30 days.</div>
-<h3>How to Check Final Answer Key</h3>
-<ul>
-<li>Visit <strong>jkssb.nic.in</strong> → Recruitment → Answer Keys.</li>
-<li>Select "Panchayat Inspector Written Examination Final Answer Key".</li>
-<li>Download the PDF and cross-check with your responses.</li>
-</ul>`
+    url: "https://api.rss2json.com/v1/api.json?rss_url=https://jkbose.nic.in/rss.xml",
+    cat: "bose"
   }
 ];
 
-const srcLabels = { ku:'Kashmir University', bose:'JKBOSE', ssb:'JKSSB' };
-let allItems = [];
-let activeFilter = 'all';
+// FETCH DATA
+async function fetchUpdates(){
+  DB = [];
 
-// ═══ UTILITIES ═══════════════════════════════════════════
-function fmtDate(d){
-  return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-}
-function badgeHtml(src){
-  const lbls={ku:'Kashmir Uni',bose:'JKBOSE',ssb:'JKSSB',results:'Results',admit:'Admit Card'};
-  return `<span class="badge badge-${src}">${lbls[src]||src.toUpperCase()}</span>`;
-}
-function cardHtml(item, delay){
-  return `<div class="ncard" data-src="${item.src}" style="animation-delay:${delay}s" onclick="navigate('article','${item.id}')">
-    <div class="ncard-meta">${badgeHtml(item.src)}<span class="ncard-date">${fmtDate(item.date)}</span>${item.isNew?'<span class="ncard-new">NEW</span>':''}</div>
-    <div class="ncard-title">${item.title}</div>
-    <div class="ncard-excerpt">${item.excerpt}</div>
-    <span class="read-more">Read full notification &#8594;</span>
-  </div>`;
-}
+  for(const feed of feeds){
+    try{
+      const res = await fetch(feed.url);
+      const data = await res.json();
 
-// ═══ ROUTER ═══════════════════════════════════════════════
-function navigate(pageId, articleId){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('#mainNav a').forEach(a=>a.classList.toggle('active',a.dataset.page===pageId));
+      data.items.slice(0,5).forEach((item, index)=>{
+        DB.push({
+          id: Date.now() + Math.random(),
+          cat: feed.cat,
+          title: item.title,
+          excerpt: item.description.replace(/<[^>]+>/g,'').slice(0,100),
+          content: item.description,
+          link: item.link
+        });
+      });
 
-  if(pageId==='article' && articleId){
-    renderArticle(articleId);
-    document.getElementById('page-article').classList.add('active');
-    history.pushState(null,'','#article/'+articleId);
-  } else {
-    const pg = document.getElementById('page-'+pageId) || document.getElementById('page-home');
-    pg.classList.add('active');
-    history.pushState(null,'','#'+pageId);
+    }catch(e){
+      console.log("Feed error", e);
+    }
   }
 
-  if(pageId==='ku')      renderCatFeed('kuFeed','ku','ku-count');
-  if(pageId==='bose')    renderCatFeed('boseFeed','bose','bose-count');
-  if(pageId==='ssb')     renderCatFeed('ssbFeed','ssb','ssb-count');
-  if(pageId==='results') renderCatFeed('resultsFeed','results','res-count');
-  if(pageId==='admit')   renderCatFeed('admitFeed','admit','adm-count');
+  // fallback demo if feeds fail
+  if(DB.length === 0){
+    DB = [
+      {id:1,cat:'ku',title:'KU Update',excerpt:'Latest update...',content:'Demo content'},
+      {id:2,cat:'bose',title:'JKBOSE Update',excerpt:'Latest result...',content:'Demo content'},
+      {id:3,cat:'ssb',title:'JKSSB Jobs',excerpt:'Recruitment open...',content:'Demo content'}
+    ];
+  }
 
-  window.scrollTo(0,0);
+  renderPosts();
 }
 
-// ═══ HOME FEED ════════════════════════════════════════════
-function loadFeed(initial){
-  const btn=document.getElementById('refreshBtn');
-  const feed=document.getElementById('homeFeed');
-  if(!initial){ btn&&btn.classList.add('spin'); feed.innerHTML='<div class="loading"><div class="loader"></div>Fetching updates&hellip;</div>'; }
-  setTimeout(()=>{
-    allItems=[...DB].sort((a,b)=>new Date(b.date)-new Date(a.date));
-    applyFilter(activeFilter);
-    document.getElementById('s-ku').textContent=allItems.filter(i=>i.src==='ku').length;
-    document.getElementById('s-bose').textContent=allItems.filter(i=>i.src==='bose').length;
-    document.getElementById('s-ssb').textContent=allItems.filter(i=>i.src==='ssb').length;
-    document.getElementById('s-total').textContent=allItems.length;
-    btn&&btn.classList.remove('spin');
-    buildTicker(allItems);
-  }, initial?0:800);
-}
+// RENDER POSTS
+function renderPosts(){
+  const list = document.getElementById('list');
+  const data = currentFilter==='all'?DB:DB.filter(p=>p.cat===currentFilter);
 
-function applyFilter(f){
-  activeFilter=f;
-  document.querySelectorAll('#homeTabs .ftab').forEach(t=>t.classList.toggle('active',t.dataset.f===f));
-  const filtered = f==='all' ? allItems : allItems.filter(i=>i.cat.includes(f));
-  document.getElementById('homeFeed').innerHTML = filtered.length
-    ? filtered.map((it,i)=>cardHtml(it,i*0.04)).join('')
-    : '<div class="loading">No updates for this category.</div>';
-}
-
-document.getElementById('homeTabs').addEventListener('click',e=>{
-  const t=e.target.closest('.ftab'); if(t) applyFilter(t.dataset.f);
-});
-
-// ═══ CATEGORY FEED ════════════════════════════════════════
-function renderCatFeed(feedId, cat, countId){
-  const items = DB.filter(i=>i.cat.includes(cat)).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const f=document.getElementById(feedId);
-  if(f) f.innerHTML = items.length ? items.map((it,i)=>cardHtml(it,i*0.04)).join('') : '<div class="loading">No items found.</div>';
-  const c=document.getElementById(countId);
-  if(c) c.textContent=items.length+' notification'+(items.length!==1?'s':'')+' found';
-}
-
-// ═══ ARTICLE PAGE ═════════════════════════════════════════
-function renderArticle(id){
-  const art=DB.find(a=>a.id===id); if(!art) return;
-  const sp=art.src;
-  document.getElementById('artBreadcrumb').innerHTML=
-    `<a onclick="navigate('home')">Home</a><span class="sep">/</span><a onclick="navigate('${sp}')">${srcLabels[sp]||sp}</a><span class="sep">/</span><span>${art.title.substring(0,55)}&hellip;</span>`;
-  document.getElementById('articleContent').innerHTML=`
-    <div class="article-hdr">
-      ${badgeHtml(art.src)}
-      <div class="article-title">${art.title}</div>
-      <div class="article-byline">
-        <span>📅 ${fmtDate(art.date)}</span>
-        <span>🏛️ ${srcLabels[art.src]||art.src}</span>
-        ${art.isNew?'<span style="color:var(--red)">🔴 NEW NOTIFICATION</span>':''}
-      </div>
+  list.innerHTML = data.map(p=>`
+    <div class="post" onclick="openPost('${p.id}')">
+      <h2>${p.title}</h2>
+      <p>${p.excerpt}</p>
     </div>
-    <div class="article-body">${art.body}</div>
-    <div class="art-tags">${art.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
-    <div class="art-source-note"><strong>Source:</strong> This notification is sourced from the official portal at <a href="${art.officialUrl}" target="_blank" rel="noopener noreferrer">${art.officialUrl}</a>. Always verify critical details before taking action.</div>`;
-  const related=DB.filter(i=>i.id!==id&&i.src===art.src).slice(0,4);
-  document.getElementById('relatedFeed').innerHTML=related.map((it,i)=>cardHtml(it,i*0.06)).join('')||'<div class="loading">No related notifications.</div>';
+  `).join('');
 }
 
-// ═══ TICKER ═══════════════════════════════════════════════
-function buildTicker(items){
-  const top=items.slice(0,10);
-  const html=top.map(i=>`<span onclick="navigate('article','${i.id}')">${i.title}</span>`).join('');
-  document.getElementById('tickerTrack').innerHTML=html+html;
+// FILTER
+function filterPosts(cat){
+  currentFilter = cat;
+  document.getElementById('article').style.display='none';
+  document.getElementById('list').style.display='block';
+  renderPosts();
 }
 
-// ═══ NAV DELEGATION ═══════════════════════════════════════
-document.getElementById('mainNav').addEventListener('click',e=>{
-  const a=e.target.closest('a[data-page]');
-  if(a){ e.preventDefault(); navigate(a.dataset.page); }
-});
+// OPEN ARTICLE
+function openPost(id){
+  const p = DB.find(x=>x.id==id);
+  const article = document.getElementById('article');
 
-// ═══ CONTACT FORM ═════════════════════════════════════════
-function submitContact(){
-  const n=document.getElementById('cName').value.trim();
-  const e=document.getElementById('cEmail').value.trim();
-  const s=document.getElementById('cSubject').value.trim();
-  const m=document.getElementById('cMessage').value.trim();
-  if(!n||!e||!s||!m){ alert('Please fill in all fields.'); return; }
-  if(!/\S+@\S+\.\S+/.test(e)){ alert('Please enter a valid email address.'); return; }
-  document.getElementById('formSuccess').style.display='block';
-  ['cName','cEmail','cSubject','cMessage'].forEach(id=>document.getElementById(id).value='');
+  article.innerHTML = `
+    <div class="back" onclick="goBack()">← Back</div>
+    <h2>${p.title}</h2>
+    <p>${p.content}</p>
+    ${p.link ? `<p><a href="${p.link}" target="_blank">Read official source →</a></p>`:''}
+  `;
+
+  document.getElementById('list').style.display='none';
+  article.style.display='block';
 }
 
-// ═══ HASH ROUTING ═════════════════════════════════════════
-function handleHash(){
-  const h=location.hash.replace('#','');
-  if(!h||h==='home'){ navigate('home'); return; }
-  if(h.startsWith('article/')){ navigate('article',h.replace('article/','')); }
-  else { navigate(h); }
+// BACK
+function goBack(){
+  document.getElementById('article').style.display='none';
+  document.getElementById('list').style.display='block';
 }
-window.addEventListener('popstate',handleHash);
 
-// ═══ INIT ═════════════════════════════════════════════════
-document.getElementById('dateStr').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('privDate').textContent=new Date().toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
-loadFeed(true);
-handleHash();
-setInterval(loadFeed,10*60*1000);
+// AUTO REFRESH EVERY 10 MIN
+setInterval(fetchUpdates, 10*60*1000);
+
+// INIT
+fetchUpdates();
 </script>
 
 </body>
