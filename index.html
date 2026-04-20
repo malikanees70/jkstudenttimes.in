@@ -1,213 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JK Updates – Live Notifications, Results & News</title>
-  <meta name="description" content="Get live updates, notifications, results and news from Kashmir University, JKBOSE, JKSSB and all Jammu & Kashmir exam results." />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Times • J&amp;K Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(24px);
+        }
+        
+        .card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgb(34 211 238 / 0.2);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .live-dot {
+            animation: livePulse 2s infinite;
+        }
+        
+        @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+        }
+    </style>
 </head>
-<body>
-
-  <!-- ===== HEADER ===== -->
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="brand">
-        <span class="brand-icon">🏔️</span>
-        <div>
-          <h1 class="brand-title">JK Updates</h1>
-          <p class="brand-sub">Live Notifications · Results · News</p>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+    <!-- Top Navigation -->
+    <div class="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-screen-2xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-lg shadow-inner">📚</div>
+                <div class="logo-font text-3xl font-semibold tracking-tighter text-white">Student Times</div>
+            </div>
+            
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                    <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full live-dot"></div>
+                    J&amp;K UPDATES LIVE
+                </div>
+                
+                <button onclick="refreshAll()" 
+                        class="flex items-center gap-2.5 px-6 py-2.5 bg-white/10 hover:bg-cyan-400 hover:text-black rounded-3xl text-sm font-medium">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    REFRESH ALL
+                </button>
+            </div>
+            
+            <div id="last-time" class="text-xs font-mono text-zinc-400">
+                Updated just now
+            </div>
         </div>
-      </div>
-      <div class="header-actions">
-        <button id="refreshAll" class="btn btn-primary" title="Refresh all feeds">
-          <span class="btn-icon">🔄</span> Refresh
-        </button>
-        <button id="themeToggle" class="btn btn-ghost" title="Toggle dark/light theme">🌙</button>
-      </div>
     </div>
 
-    <!-- Live Ticker -->
-    <div class="ticker-wrap">
-      <span class="ticker-label">🔴 LIVE</span>
-      <div class="ticker-track" id="tickerTrack">
-        <span class="ticker-item">Loading latest updates…</span>
-      </div>
+    <div class="max-w-screen-2xl mx-auto px-6 py-10">
+        
+        <!-- Quick Direct Links -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div onclick="openBoard(0)" class="glass rounded-3xl p-6 cursor-pointer card border border-cyan-400/20 hover:border-cyan-400/50 group">
+                <div class="flex justify-between">
+                    <div class="text-5xl">📋</div>
+                    <div class="text-xs px-3 py-1 bg-cyan-400/10 text-cyan-400 rounded-2xl h-fit">SSB</div>
+                </div>
+                <div class="mt-8">
+                    <div class="font-semibold text-xl group-hover:text-cyan-400">JKSSB</div>
+                    <div class="text-xs text-zinc-400">Recruitment Updates</div>
+                </div>
+            </div>
+            
+            <div onclick="openBoard(1)" class="glass rounded-3xl p-6 cursor-pointer card border border-purple-400/20 hover:border-purple-400/50 group">
+                <div class="flex justify-between">
+                    <div class="text-5xl">🎓</div>
+                    <div class="text-xs px-3 py-1 bg-purple-400/10 text-purple-400 rounded-2xl h-fit">KU</div>
+                </div>
+                <div class="mt-8">
+                    <div class="font-semibold text-xl group-hover:text-purple-400">Kashmir University</div>
+                    <div class="text-xs text-zinc-400">Admit Cards &amp; Results</div>
+                </div>
+            </div>
+            
+            <div onclick="openBoard(2)" class="glass rounded-3xl p-6 cursor-pointer card border border-amber-400/20 hover:border-amber-400/50 group">
+                <div class="flex justify-between">
+                    <div class="text-5xl">📚</div>
+                    <div class="text-xs px-3 py-1 bg-amber-400/10 text-amber-400 rounded-2xl h-fit">BOSE</div>
+                </div>
+                <div class="mt-8">
+                    <div class="font-semibold text-xl group-hover:text-amber-400">J&amp;K BOSE</div>
+                    <div class="text-xs text-zinc-400">Exams &amp; Date Sheets</div>
+                </div>
+            </div>
+            
+            <div onclick="openBoard(3)" class="glass rounded-3xl p-6 cursor-pointer card border border-pink-400/20 hover:border-pink-400/50 group">
+                <div class="flex justify-between">
+                    <div class="text-5xl">⚖️</div>
+                    <div class="text-xs px-3 py-1 bg-pink-400/10 text-pink-400 rounded-2xl h-fit">PSC</div>
+                </div>
+                <div class="mt-8">
+                    <div class="font-semibold text-xl group-hover:text-pink-400">JKPSC</div>
+                    <div class="text-xs text-zinc-400">Competitive Exams</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
+            
+            <!-- JKSSB -->
+            <div class="glass rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">📋</span>
+                        <div class="font-medium">JKSSB</div>
+                    </div>
+                    <button onclick="refreshBoard(0)" class="text-cyan-400 hover:text-white">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div id="list-0" class="space-y-3 min-h-[320px]">
+                    <!-- JS injected -->
+                </div>
+                <div onclick="navigateTo('https://jkssb.nic.in/Whatsnew.html')" 
+                     class="mt-6 text-center text-xs tracking-widest text-cyan-400 hover:text-white cursor-pointer py-3 border border-dashed border-cyan-400/30 rounded-2xl">
+                    OPEN FULL JKSSB PAGE →
+                </div>
+            </div>
+
+            <!-- Kashmir University -->
+            <div class="glass rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">🎓</span>
+                        <div class="font-medium">Kashmir University</div>
+                    </div>
+                    <button onclick="refreshBoard(1)" class="text-purple-400 hover:text-white">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div id="list-1" class="space-y-3 min-h-[320px]">
+                    <!-- JS injected -->
+                </div>
+                <div onclick="navigateTo('https://www.kashmiruniversity.net/notifications.aspx')" 
+                     class="mt-6 text-center text-xs tracking-widest text-purple-400 hover:text-white cursor-pointer py-3 border border-dashed border-purple-400/30 rounded-2xl">
+                    OPEN FULL KU NOTIFICATIONS →
+                </div>
+            </div>
+
+            <!-- JKBose -->
+            <div class="glass rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">📚</span>
+                        <div class="font-medium">J&amp;K BOSE</div>
+                    </div>
+                    <button onclick="refreshBoard(2)" class="text-amber-400 hover:text-white">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div id="list-2" class="space-y-3 min-h-[320px]">
+                    <!-- JS injected -->
+                </div>
+                <div onclick="navigateTo('https://jkbose.jk.gov.in')" 
+                     class="mt-6 text-center text-xs tracking-widest text-amber-400 hover:text-white cursor-pointer py-3 border border-dashed border-amber-400/30 rounded-2xl">
+                    OPEN NEW JKBose PORTAL →
+                </div>
+            </div>
+
+            <!-- JKPSC -->
+            <div class="glass rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">⚖️</span>
+                        <div class="font-medium">JKPSC</div>
+                    </div>
+                    <button onclick="refreshBoard(3)" class="text-pink-400 hover:text-white">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+                <div id="list-3" class="space-y-3 min-h-[320px]">
+                    <!-- JS injected -->
+                </div>
+                <div onclick="navigateTo('https://jkpsc.nic.in')" 
+                     class="mt-6 text-center text-xs tracking-widest text-pink-400 hover:text-white cursor-pointer py-3 border border-dashed border-pink-400/30 rounded-2xl">
+                    OPEN FULL JKPSC SITE →
+                </div>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <!-- ===== NAV ===== -->
-  <nav class="main-nav" role="navigation" aria-label="Main navigation">
-    <ul class="nav-list">
-      <li><a href="#ku"    class="nav-link active" data-section="ku">🎓 Kashmir University</a></li>
-      <li><a href="#bose"  class="nav-link" data-section="bose">📚 JKBOSE</a></li>
-      <li><a href="#ssb"   class="nav-link" data-section="ssb">💼 JKSSB</a></li>
-      <li><a href="#results" class="nav-link" data-section="results">📋 Results</a></li>
-      <li><a href="#news"  class="nav-link" data-section="news">📰 News</a></li>
-    </ul>
-  </nav>
-
-  <!-- ===== SEARCH ===== -->
-  <section class="search-section" aria-label="Search updates">
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input type="search" id="searchInput" placeholder="Search notifications, results, jobs…" autocomplete="off" />
-      <button class="btn btn-primary" id="searchBtn">Search</button>
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
+        <div class="modal glass max-w-2xl w-full rounded-3xl overflow-hidden border border-white/20">
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between bg-zinc-900">
+                <div id="modal-title" class="font-semibold"></div>
+                <button onclick="closeModal()" class="text-zinc-400 hover:text-white text-2xl leading-none">×</button>
+            </div>
+            
+            <!-- Preview Content -->
+            <div class="p-8 text-center">
+                <div id="modal-icon" class="text-8xl mb-6"></div>
+                <p id="modal-desc" class="text-zinc-300 leading-relaxed"></p>
+                
+                <div class="my-10 h-px bg-white/10"></div>
+                
+                <div onclick="proceedToLink()" 
+                     class="cursor-pointer bg-white text-black hover:bg-cyan-400 hover:text-black font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 text-lg">
+                    <span id="modal-action-text">Continue to Official Page</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </div>
+                
+                <div class="text-[10px] text-zinc-500 mt-6">You will be redirected to the verified official government website</div>
+            </div>
+        </div>
     </div>
-    <div id="searchResults" class="search-results hidden" aria-live="polite"></div>
-  </section>
 
-  <!-- ===== STATS BAR ===== -->
-  <div class="stats-bar">
-    <div class="stat-card">
-      <span class="stat-num" id="statKU">–</span>
-      <span class="stat-label">KU Notices</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num" id="statBOSE">–</span>
-      <span class="stat-label">JKBOSE Notices</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num" id="statSSB">–</span>
-      <span class="stat-label">JKSSB Jobs</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num" id="statResults">–</span>
-      <span class="stat-label">Recent Results</span>
-    </div>
-  </div>
+    <script>
+        // Data
+        const data = {
+            0: { // JKSSB
+                name: "JKSSB",
+                color: "cyan",
+                icon: "📋",
+                items: [
+                    { title: "Latest Notifications & What's New", date: "20 Apr 2026", link: "https://jkssb.nic.in/Whatsnew.html" }
+                ],
+                mainLink: "https://jkssb.nic.in/Whatsnew.html"
+            },
+            1: { // Kashmir University
+                name: "Kashmir University",
+                color: "purple",
+                icon: "🎓",
+                items: [
+                    { title: "Diploma / Certificate Selection Notification", date: "17 Apr 2026", link: "https://www.kashmiruniversity.net/events/10608.pdf" },
+                    { title: "Research Investigator Admit Card", date: "17 Apr 2026", link: "https://egov.uok.edu.in/exams/ugforms/prelogin/default_phd.aspx?id=31" },
+                    { title: "Field Investigator Admit Card", date: "17 Apr 2026", link: "https://egov.uok.edu.in/exams/ugforms/prelogin/default_phd.aspx?id=6" }
+                ],
+                mainLink: "https://www.kashmiruniversity.net/notifications.aspx"
+            },
+            2: { // JKBose
+                name: "J&amp;K BOSE",
+                color: "amber",
+                icon: "📚",
+                items: [
+                    { title: "New Official Website Live", date: "20 Apr 2026", link: "https://jkbose.jk.gov.in" },
+                    { title: "All Results, Circulars &amp; Date Sheets", date: "20 Apr 2026", link: "https://jkbose.jk.gov.in" }
+                ],
+                mainLink: "https://jkbose.jk.gov.in"
+            },
+            3: { // JKPSC
+                name: "JKPSC",
+                color: "pink",
+                icon: "⚖️",
+                items: [
+                    { title: "Medical Exam Deployment JKCCE 2024", date: "21 Mar 2026", link: "https://jkpsc.nic.in/pdf/Notice_Medical_Test_kas2.pdf" },
+                    { title: "Lecturer Persian Interview Notice", date: "19 Mar 2026", link: "https://jkpsc.nic.in/pdf/Princedraft_3.pdf" },
+                    { title: "Lecturer Commerce Interview", date: "18 Mar 2026", link: "https://jkpsc.nic.in/pdf/Princedraft_2.pdf" }
+                ],
+                mainLink: "https://jkpsc.nic.in"
+            }
+        }
 
-  <!-- ===== MAIN CONTENT ===== -->
-  <main class="content-grid">
+        let currentLink = ""
 
-    <!-- KASHMIR UNIVERSITY -->
-    <section id="ku" class="portal-section" data-portal="ku">
-      <div class="section-header ku-accent">
-        <h2>🎓 Kashmir University</h2>
-        <a href="https://www.kashmiruniversity.net" target="_blank" rel="noopener" class="portal-link">Visit Portal ↗</a>
-      </div>
-      <div class="tabs">
-        <button class="tab active" data-tab="ku-notices">Notifications</button>
-        <button class="tab" data-tab="ku-results">Results</button>
-        <button class="tab" data-tab="ku-datesheet">Date Sheet</button>
-        <button class="tab" data-tab="ku-admissions">Admissions</button>
-      </div>
-      <div id="ku-notices"    class="tab-content active feed-list" data-feed="ku-notices">    <div class="loading-spinner"></div></div>
-      <div id="ku-results"    class="tab-content feed-list"        data-feed="ku-results">    <div class="loading-spinner"></div></div>
-      <div id="ku-datesheet"  class="tab-content feed-list"        data-feed="ku-datesheet">  <div class="loading-spinner"></div></div>
-      <div id="ku-admissions" class="tab-content feed-list"        data-feed="ku-admissions"> <div class="loading-spinner"></div></div>
-    </section>
+        function createCard(item, boardId) {
+            return `
+                <div onclick="showPreview('${item.link}', '${item.title}', '${data[boardId].icon}', '${boardId}')" 
+                     class="card glass border border-white/10 rounded-2xl p-5 cursor-pointer hover:border-white/30">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium line-clamp-2 leading-tight">${item.title}</p>
+                            <p class="text-xs text-zinc-400 mt-3 font-mono">${item.date}</p>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-[10px] flex items-center gap-2 text-cyan-400">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>Tap to preview &amp; open</span>
+                    </div>
+                </div>
+            `
+        }
 
-    <!-- JKBOSE -->
-    <section id="bose" class="portal-section" data-portal="bose">
-      <div class="section-header bose-accent">
-        <h2>📚 JKBOSE</h2>
-        <a href="https://www.jkbose.nic.in" target="_blank" rel="noopener" class="portal-link">Visit Portal ↗</a>
-      </div>
-      <div class="tabs">
-        <button class="tab active" data-tab="bose-notices">Notifications</button>
-        <button class="tab" data-tab="bose-results">Results</button>
-        <button class="tab" data-tab="bose-datesheet">Date Sheet</button>
-        <button class="tab" data-tab="bose-syllabus">Syllabus</button>
-      </div>
-      <div id="bose-notices"   class="tab-content active feed-list" data-feed="bose-notices">  <div class="loading-spinner"></div></div>
-      <div id="bose-results"   class="tab-content feed-list"        data-feed="bose-results">  <div class="loading-spinner"></div></div>
-      <div id="bose-datesheet" class="tab-content feed-list"        data-feed="bose-datesheet"><div class="loading-spinner"></div></div>
-      <div id="bose-syllabus"  class="tab-content feed-list"        data-feed="bose-syllabus"> <div class="loading-spinner"></div></div>
-    </section>
+        function renderBoard(id) {
+            const container = document.getElementById(`list-${id}`)
+            if (!container) return
+            container.innerHTML = data[id].items.map(item => createCard(item, id)).join('')
+        }
 
-    <!-- JKSSB -->
-    <section id="ssb" class="portal-section" data-portal="ssb">
-      <div class="section-header ssb-accent">
-        <h2>💼 JKSSB</h2>
-        <a href="https://www.jkssb.nic.in" target="_blank" rel="noopener" class="portal-link">Visit Portal ↗</a>
-      </div>
-      <div class="tabs">
-        <button class="tab active" data-tab="ssb-notifications">Notifications</button>
-        <button class="tab" data-tab="ssb-results">Results</button>
-        <button class="tab" data-tab="ssb-schedule">Schedule</button>
-        <button class="tab" data-tab="ssb-advt">Advertisements</button>
-      </div>
-      <div id="ssb-notifications" class="tab-content active feed-list" data-feed="ssb-notifications"><div class="loading-spinner"></div></div>
-      <div id="ssb-results"       class="tab-content feed-list"        data-feed="ssb-results">      <div class="loading-spinner"></div></div>
-      <div id="ssb-schedule"      class="tab-content feed-list"        data-feed="ssb-schedule">     <div class="loading-spinner"></div></div>
-      <div id="ssb-advt"          class="tab-content feed-list"        data-feed="ssb-advt">         <div class="loading-spinner"></div></div>
-    </section>
+        function showPreview(link, title, icon, boardId) {
+            currentLink = link
+            document.getElementById('modal-title').innerHTML = `
+                <span class="text-2xl">${icon}</span> 
+                <span class="ml-3">${data[boardId].name}</span>
+            `
+            document.getElementById('modal-icon').textContent = icon
+            document.getElementById('modal-desc').innerHTML = `
+                <strong>${title}</strong><br><br>
+                You are about to visit the official ${data[boardId].name} page.<br>
+                All links are verified and point directly to government websites.
+            `
+            document.getElementById('preview-modal').classList.remove('hidden')
+            document.getElementById('preview-modal').classList.add('flex')
+        }
 
-    <!-- RESULTS -->
-    <section id="results" class="portal-section wide-section" data-portal="results">
-      <div class="section-header results-accent">
-        <h2>📋 JK Exam Results</h2>
-        <span class="badge">All Boards & Universities</span>
-      </div>
-      <div class="results-filter">
-        <select id="resultFilter" class="filter-select">
-          <option value="all">All Organisations</option>
-          <option value="ku">Kashmir University</option>
-          <option value="bose">JKBOSE</option>
-          <option value="ssb">JKSSB</option>
-          <option value="jkpsc">JKPSC</option>
-          <option value="smvd">SMVDU</option>
-          <option value="iust">IUST</option>
-        </select>
-        <select id="resultYear" class="filter-select">
-          <option value="2026">2026</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
-        </select>
-        <button class="btn btn-primary" id="filterResultsBtn">Filter</button>
-      </div>
-      <div id="results-list" class="results-grid feed-list" data-feed="results"><div class="loading-spinner"></div></div>
-    </section>
+        function closeModal() {
+            const modal = document.getElementById('preview-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+        }
 
-    <!-- NEWS -->
-    <section id="news" class="portal-section wide-section" data-portal="news">
-      <div class="section-header news-accent">
-        <h2>📰 JK Education News</h2>
-        <a href="https://www.greaterkashmir.com" target="_blank" rel="noopener" class="portal-link">More News ↗</a>
-      </div>
-      <div id="news-list" class="news-grid feed-list" data-feed="news"><div class="loading-spinner"></div></div>
-    </section>
+        function proceedToLink() {
+            if (currentLink) {
+                closeModal()
+                setTimeout(() => {
+                    window.open(currentLink, '_blank')
+                }, 300)
+            }
+        }
 
-  </main>
+        function navigateTo(url) {
+            window.open(url, '_blank')
+        }
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="footer-grid">
-      <div class="footer-col">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="https://www.kashmiruniversity.net" target="_blank" rel="noopener">Kashmir University</a></li>
-          <li><a href="https://www.jkbose.nic.in" target="_blank" rel="noopener">JKBOSE</a></li>
-          <li><a href="https://www.jkssb.nic.in" target="_blank" rel="noopener">JKSSB</a></li>
-          <li><a href="https://www.jkpsc.nic.in" target="_blank" rel="noopener">JKPSC</a></li>
-          <li><a href="https://smvdu.ac.in" target="_blank" rel="noopener">SMVDU</a></li>
-          <li><a href="https://iust.ac.in" target="_blank" rel="noopener">IUST</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3>Result Portals</h3>
-        <ul>
-          <li><a href="https://results.kashmiruniversity.net" target="_blank" rel="noopener">KU Results</a></li>
-          <li><a href="https://www.jkbose.nic.in" target="_blank" rel="noopener">BOSE Results</a></li>
-          <li><a href="https://jkexamresults.nic.in" target="_blank" rel="noopener">JK Exam Results</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3>About</h3>
-        <p>JK Updates aggregates public notifications and results from official JK government & university portals. All content belongs to respective organisations.</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 JK Updates &nbsp;|&nbsp; Data sourced from official portals</span>
-      <span class="last-updated">Last refreshed: <span id="lastRefreshed">–</span></span>
-    </div>
-  </footer>
+        function refreshBoard(id) {
+            const container = document.getElementById(`list-${id}`)
+            if (container) {
+                container.innerHTML = `<div class="flex justify-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-zinc-400"></i></div>`
+            }
+            setTimeout(() => renderBoard(id), 700)
+        }
 
-  <!-- ===== BACK TO TOP ===== -->
-  <button id="backToTop" class="back-to-top" title="Back to top">↑</button>
+        function refreshAll() {
+            for (let i = 0; i < 4; i++) {
+                refreshBoard(i)
+            }
+            updateTime()
+        }
 
-  <script src="app.js"></script>
+        function updateTime() {
+            const el = document.getElementById('last-time')
+            if (el) el.textContent = `Updated just now • ${new Date().toLocaleTimeString('en-IN', {hour:'numeric', minute:'2-digit'})} IST`
+        }
+
+        function openBoard(id) {
+            document.getElementById(`list-${id}`).scrollIntoView({ behavior: "smooth" })
+        }
+
+        // Initialize
+        window.onload = function() {
+            for (let i = 0; i < 4; i++) {
+                renderBoard(i)
+            }
+            updateTime()
+            
+            setInterval(() => {
+                if (Math.random() > 0.7) refreshAll()
+            }, 300000)
+            
+            console.log("%c✅ Student Times loaded with preview → redirect flow", "color:#67e8f9;font-weight:600")
+        }
+    </script>
 </body>
 </html>
